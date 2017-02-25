@@ -42,9 +42,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Chart.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Encoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -52,6 +49,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MultiSend.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SendFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,6 +86,9 @@
     <ClCompile Include="MultiSend.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SendFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Ucom.rc">
@@ -95,6 +98,9 @@
   <ItemGroup>
     <None Include="res\Ucom.rc2">
       <Filter>资源文件</Filter>
+    </None>
+    <None Include="resource.hm">
+      <Filter>头文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +120,9 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\dzxh.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\DZXH.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

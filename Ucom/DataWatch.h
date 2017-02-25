@@ -1,6 +1,5 @@
 #pragma once
 
-
 // CDataWatch ¶Ô»°¿ò
 
 class CDataWatch : public CDialog

@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CGraphDlg, CDialog)
 CGraphDlg::CGraphDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CGraphDlg::IDD, pParent), isGraph(false)
 {
-
+	
 }
 
 CGraphDlg::~CGraphDlg()
@@ -30,7 +30,6 @@ void CGraphDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CGraphDlg, CDialog)
 	ON_BN_CLICKED(IDC_BtnClearGraph, &CGraphDlg::OnBnClickedBtncleargraph)
 	ON_WM_PAINT()
-//	ON_STN_CLICKED(IDC_PIC_DZXH, &CGraphDlg::OnStnClickedPicDzxh)
 ON_BN_CLICKED(IDC_BtnStartGraph, &CGraphDlg::OnBnClickedBtnstartgraph)
 END_MESSAGE_MAP()
 
@@ -50,6 +49,8 @@ void CGraphDlg::OnPaint()
 	hCanvas = GetDlgItem(IDC_CANVAS)->m_hWnd;
 	GetDlgItem(IDC_CANVAS)->GetClientRect(&rectCanvas);
 	pCanvas = (GetDlgItem(IDC_CANVAS)->GetDC());
+
+
 	//hdc = ::BeginPaint(hCanvas, &ps);
 	//::EndPaint(hCanvas, &ps);
 }
@@ -114,14 +115,14 @@ void CGraphDlg::AddDataString(CString str)
 	}
 	cnt++;
 
-	InvalidateRect(&rectCanvas, true);
+	//InvalidateRect(&rectCanvas, true);
 }
 
 
 void CGraphDlg::OnBnClickedBtncleargraph()
 {
 
-	InvalidateRect(&rectCanvas, true);
+	//InvalidateRect(&rectCanvas, true);
 }
 
 

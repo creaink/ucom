@@ -17,6 +17,7 @@ public:
 
 
 private:
+	bool isHotKey;
 	void LoppSendSet(void);
 	bool *pIsUartOpen;
 	HANDLE *hUartCom;
@@ -28,6 +29,7 @@ private:
 	void SendEdbox(int index);
 	int UnblockSend(const CString &dataStr);
 	void OnTimeSend(bool clearcnt=false);
+	BOOL CMultiSend::PreTranslateMessage(MSG* pMsg);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
@@ -44,4 +46,5 @@ public:
 	afx_msg void OnBnClickedBtnsend(UINT   uId);
 	afx_msg void OnDropdownCbtransnum();
 	afx_msg void OnBnClickedBtntrans();
+	afx_msg void OnClickedCkbxhotkey();
 };

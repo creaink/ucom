@@ -245,9 +245,8 @@ UINT RxThreadFunc(LPVOID mThreadPara)
 		{
 			pPara->stopFlag = RT_NOT_EXIT;
 			///有数据发送消息给UI线程
-			//发送消息过程中触发线程退出，错误
+			//发送消息过程中触发线程退出，错误?
 			::SendMessage(::AfxGetMainWnd()->m_hWnd, WM_COMM_RX_MSG, 1, 0);
-			//TRACE("Rec\n");
 			pPara->stopFlag = RT_PRE_EXIT;
 		}
 		dwMask = 0;
@@ -308,11 +307,15 @@ int iUart::UnblockRead(CString &dataStr)
 
 	ClearCommError(hUartCom, &dwErrorFlags, &ComStat);
 	//cbInQue返回在串行驱动程序输入队列中的字符数
-	dwBytesRead = ComStat.cbInQue;
 
+	dwBytesRead = ComStat.cbInQue;
+	/* 关闭时候的一次读取 无符号dwBytesRead会特别大GetBufferSetLength出现参数错误*/
+	if ((int)dwBytesRead <= 0)
+		return 0;
 	dataStr.GetBufferSetLength(dwBytesRead);
 	//读取
 	bReadStatus = ReadFile(hUartCom, dataStr.GetBuffer(0), dwBytesRead, &dwBytesRead, &m_osRead);
+
 	if (!bReadStatus)
 	{
 		//如果重叠操作未完成,等待直到操作完成
@@ -345,7 +348,10 @@ int iUart::UnblockSend(const CString &dataStr)
 		return 0;
 	}
 	m_osWrite.Offset = 0;
-	dwLength = dataStr.GetAllocLength();
+
+	//dwLength = dataStr.GetAllocLength();
+	//append方式添加就得GetLength才能的出来正确计数（GetAllocLength有bug），好像GetLength不是以'\0'来算的
+	dwLength = dataStr.GetLength();
 	bWriteStatus = WriteFile(hUartCom, dataStr, dwLength, &dwLength, &m_osWrite);
 
 	if (!bWriteStatus)

@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CMultiSend, CDialog)
 
 CMultiSend::CMultiSend(CWnd* pParent, bool *pUartOpenStatus, HANDLE *hUART)
-	: CDialog(CMultiSend::IDD, pParent)
+: CDialog(CMultiSend::IDD, pParent), isHotKey(false)
 {
 	pIsUartOpen = pUartOpenStatus;
 	hUartCom = hUART;
@@ -35,6 +35,9 @@ BEGIN_MESSAGE_MAP(CMultiSend, CDialog)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BtnSend1, IDC_BtnSend10, OnBnClickedBtnsend)
 	ON_CBN_DROPDOWN(IDC_CbTransNum, &CMultiSend::OnDropdownCbtransnum)
 	ON_BN_CLICKED(IDC_BtnTrans, &CMultiSend::OnBnClickedBtntrans)
+//	ON_WM_KEYDOWN()
+//	ON_WM_CHAR()
+ON_BN_CLICKED(IDC_CkbXHotKey, &CMultiSend::OnClickedCkbxhotkey)
 END_MESSAGE_MAP()
 
 
@@ -169,7 +172,6 @@ void CMultiSend::OnTimer(UINT_PTR nIDEvent)
 void CMultiSend::OnOK()
 {
 	// TODO:  在此添加专用代码和/或调用基类
-
 	//CDialog::OnOK();
 	return;
 }
@@ -187,9 +189,13 @@ void CMultiSend::SendEdbox(int index)
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbXNewLine))
 	{
 		strTmp = "\r\n";
-		txData.AppendString(strTmp);
+		//txData.AppendString(strTmp);
+		UnblockSend(txData.GetCStrData()+strTmp);
 	}
-	UnblockSend(txData.GetCStrData());
+	else
+	{
+		UnblockSend(txData.GetCStrData());
+	}
 }
 
 void CMultiSend::OnBnClickedBtnsend(UINT   uId)
@@ -215,4 +221,51 @@ void CMultiSend::OnBnClickedBtntrans()
 	GetDlgItemText(IDC_EdbXDetail,strTmp); 
 	SetDlgItemText(IDC_EdbData1 + ((CComboBox *)GetDlgItem(IDC_CbTransNum))->GetCurSel()
 		, strTmp);
+}
+
+
+BOOL CMultiSend::PreTranslateMessage(MSG* pMsg)
+{
+	//按键弹起并且选择按键触发而且焦点在最下方细节框里
+	if (pMsg->message == WM_KEYDOWN 
+		&& isHotKey
+		&& GetDlgItem(IDC_EdbXDetail) == GetFocus())
+	{
+		TRACE("KeyVal:%d\n", pMsg->wParam);
+		switch (pMsg->wParam+32)//还原成ascii
+		{
+		case 'w':
+			OnBnClickedBtnsend(IDC_BtnSend1);break;
+		case 's':
+			OnBnClickedBtnsend(IDC_BtnSend2);break;
+		case 'a':
+			OnBnClickedBtnsend(IDC_BtnSend3);break;
+		case 'd':
+			OnBnClickedBtnsend(IDC_BtnSend4);break;
+		case 'i':
+			OnBnClickedBtnsend(IDC_BtnSend5);break;
+		case 'k':
+			OnBnClickedBtnsend(IDC_BtnSend6);break;
+		case 'j':
+			OnBnClickedBtnsend(IDC_BtnSend7);break;
+		case 'l':
+			OnBnClickedBtnsend(IDC_BtnSend8);break;
+		case 'q':
+			OnBnClickedBtnsend(IDC_BtnSend9);break;
+		case 'e':
+			OnBnClickedBtnsend(IDC_BtnSend10);break;
+		default:
+			break;
+		}
+	}
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void CMultiSend::OnClickedCkbxhotkey()
+{
+	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbXHotKey))
+		isHotKey = true;
+	else
+		isHotKey = false;
 }

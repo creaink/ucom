@@ -51,10 +51,10 @@ unsigned char TextBank::ValueOfString(LPCTSTR buffer)
 	{
 		if (*buffer <= '9')
 			dat += i*(*buffer - '0');
-		else if (*buffer <= 'f')
-			dat += i*(*buffer - 'a' + 10);
 		else if (*buffer <= 'F')
 			dat += i*(*buffer - 'A' + 10);
+		else if (*buffer <= 'f')
+			dat += i*(*buffer - 'a' + 10);
 		buffer++;
 	}
 	return dat;
@@ -86,45 +86,4 @@ void TextBank::ReString(CString &mStr, bool isHexFormat)
 		DataStr = mStr;
 		ByteCnt = mStr.GetLength();
 	}
-}
-
-
-
-/**
-* @brief 队列的数组方式实现
-* @param QD_TYPE为队列的数据类型，NewDat新数据，pQueue备操作的队列
-* @retval
-**/
-QD_TYPE Quene(QD_TYPE NewDat, Queue_Type *pQueue)
-{
-	QD_TYPE tmp = pQueue->dat[pQueue->pNow];
-	pQueue->dat[pQueue->pNow] = NewDat;
-	if (++pQueue->pNow == pQueue->QUEUE_NUM)
-	{
-		pQueue->pNow = 0;
-	}
-	return tmp;
-}
-
-QD_TYPE GetQueneAver(Queue_Type *pQueue)
-{
-	int cnt;
-	int Aver = 0;
-	for (cnt = 0; cnt<pQueue->QUEUE_NUM; cnt++)
-	{
-		Aver += pQueue->dat[cnt];
-	}
-	Aver = Aver / pQueue->QUEUE_NUM;
-	return Aver;
-}
-
-QD_TYPE GetQueneSum(Queue_Type *pQueue)
-{
-	int cnt;
-	int sum = 0;
-	for (cnt = 0; cnt<pQueue->QUEUE_NUM; cnt++)
-	{
-		sum += pQueue->dat[cnt];
-	}
-	return sum;
 }

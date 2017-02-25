@@ -38,17 +38,3 @@ public:
 	}
 };
 
-
-#define QUEUE_MAX 20
-#define QD_TYPE int
-typedef struct
-{
-	int pNow;
-	int QUEUE_NUM;
-	QD_TYPE dat[QUEUE_MAX];
-}
-Queue_Type;
-
-QD_TYPE Quene(QD_TYPE NewDat, Queue_Type *pQueue);
-QD_TYPE GetQueneAver(Queue_Type *pQueue);
-QD_TYPE GetQueneSum(Queue_Type *pQueue);

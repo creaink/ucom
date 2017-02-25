@@ -10,9 +10,11 @@
 #include "Encoder.h"
 #include "DataWatch.h"
 #include "MultiSend.h"
+#include "SendFile.h"
 
-#define TIMER_ID 100
-#define FLASH_RX_EDITBOX_ID 101
+
+#define AUTO_SEND_TIMER_ID 100
+#define FLASH_RX_EDITBOX_TIMER_ID 101
 // CUcomDlg 对话框
 //class CUcomDlg : public CDialogEx
 class CUcomDlg : public CDialog
@@ -30,7 +32,7 @@ public:
 	//是否有可用串口
 	bool uartPortIsOpen;
 	bool isNewLineSend;
-	bool isDispHex, isSendHex, isDispRx, isRxFullClc;
+	bool isDispHex, isSendHex, isDispRx, isRxFullClc,isCmdMode;
 	int rxCnt, txCnt, limitBytes;
 
 	void InitCbBuart(void);
@@ -68,6 +70,12 @@ public:
 
 	int encoderMode;
 
+private:
+	#define MAX_CMD_HISTORY 7
+	BOOL PreTranslateMessage(MSG* pMsg);
+	int cmdNextPointer, cmdDispPointer;
+	CString cmdHistory[MAX_CMD_HISTORY];
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
@@ -96,7 +104,7 @@ protected:
 	afx_msg void OnChangeEditTxData();
 	afx_msg void OnCkbSendHex();
 	afx_msg void OnBnClickedBtnisdisprx();
-	afx_msg LRESULT OnMyMessageProc(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRxMsgProc(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedBtntoolbox();
 	afx_msg void OnMeudevmanger();
@@ -122,4 +130,7 @@ public:
 	afx_msg void OnBnClickedBtnencoder();
 	afx_msg void OnBnClickedBtnsend2();
 	virtual void OnOK();
+//	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnBnClickedBtnsendfile();
+	afx_msg void OnBnClickedCkbcmd();
 };

@@ -52,7 +52,7 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_EN_CHANGE(IDC_EditTxData, OnChangeEditTxData)
 	ON_BN_CLICKED(IDC_CkbSendHex, OnCkbSendHex)
 	ON_BN_CLICKED(IDC_BtnIsDispRx, OnBnClickedBtnisdisprx)
-	ON_MESSAGE(WM_COMM_RX_MSG, &CUcomDlg::OnMyMessageProc)
+	ON_MESSAGE(WM_COMM_RX_MSG, &CUcomDlg::OnRxMsgProc)
 
 
 	ON_WM_CLOSE()
@@ -76,7 +76,9 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_BN_CLICKED(IDC_BtnHelp, &CUcomDlg::OnBnClickedBtnhelp)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TABEx, &CUcomDlg::OnSelchangeTabex)
 	ON_BN_CLICKED(IDC_BtnEncoder, &CUcomDlg::OnBnClickedBtnencoder)
-	ON_BN_CLICKED(IDC_BtnSend2, &CUcomDlg::OnBnClickedBtnsend2)
+	ON_BN_CLICKED(IDC_BtnSendFile, &CUcomDlg::OnBnClickedBtnsendfile)
+//	ON_WM_CHAR()
+ON_BN_CLICKED(IDC_CkbCMD, &CUcomDlg::OnBnClickedCkbcmd)
 END_MESSAGE_MAP()
 
 
@@ -92,7 +94,7 @@ BOOL CUcomDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	SetWindowText(_T("Ucom 轻串口 长春理工大学电子学会"));
+	SetWindowText(_T("Ucom v1.02 轻串口 长春理工大学电子学会"));
 
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
@@ -108,6 +110,7 @@ BOOL CUcomDlg::OnInitDialog()
 	isDispHex = false;
 	isSendHex = false;
 	isDispRx = true;
+	isCmdMode = false;
 	encoderMode = 0;
 	rxCnt = 0;
 	txCnt = 0;
@@ -125,6 +128,9 @@ BOOL CUcomDlg::OnInitDialog()
 
 	SetRichLineSpace();
 	OnBnClickedBtnwinsize();
+
+	cmdNextPointer = 0;
+	cmdDispPointer = 0;
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -259,16 +265,18 @@ void CUcomDlg::OpenUart()
 		uartPortIsOpen = TRUE;
 		SetDelaySend();
 		//设定接收框文本刷新时间 人眼24Hz
-		SetTimer(FLASH_RX_EDITBOX_ID, rxFlashPeriod, NULL);
+		SetTimer(FLASH_RX_EDITBOX_TIMER_ID, rxFlashPeriod, NULL);
 	}
 	else if (uartPortIsOpen == TRUE)
 	{
+		//先置位标志位避免关闭时候接收错误
+		uartPortIsOpen = FALSE;
+		KillTimer(AUTO_SEND_TIMER_ID);//自动发送关闭定时器
+		KillTimer(FLASH_RX_EDITBOX_TIMER_ID);//关闭接收显示定时器
+
 		//结束接收线程
 		//mUart.CloseWaitThread();
 		TerminateThread(hRxThread, 0);
-
-		KillTimer(TIMER_ID);//关闭定时器
-		KillTimer(FLASH_RX_EDITBOX_ID);//关闭定时器
 
 		SetDlgItemText(IDC_BtnOpen, _T("打开串口"));
 		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOff);
@@ -276,14 +284,11 @@ void CUcomDlg::OpenUart()
 		//关闭串口
 		if (mUart.isConnected())
 			mUart.ClosePort();
-
-		uartPortIsOpen = FALSE;
 	}
 }
 
 void CUcomDlg::OnBtnOpen()
 {
-
 	OpenUart();
 }
 
@@ -474,12 +479,15 @@ void CUcomDlg::SendEditBoxData(void)
 {
 	CString tmpStr("\r\n");
 	//换行
-	if (isNewLineSend == TRUE)
-		DataTx.AppendString(tmpStr);
-
-	mUart.UnblockSend(DataTx.GetCStrData());
-	txCnt += DataTx.GetLength();
-
+	if (isNewLineSend == TRUE) {
+		mUart.UnblockSend(DataTx.GetCStrData() + tmpStr);
+		txCnt = txCnt+1+ DataTx.GetLength();
+	}
+	else {
+		mUart.UnblockSend(DataTx.GetCStrData());
+		txCnt += DataTx.GetLength();
+	}
+	
 	//刷新计数
 	tmpStr.Format(_T("发送数据：%d Bytes"), txCnt);
 	SetDlgItemText(IDC_GrpSend, tmpStr);
@@ -490,19 +498,22 @@ void CUcomDlg::ReflashRecvEdit(void)
 {
 	CString tmpStr;
 	CRichEditCtrl *pRich = (CRichEditCtrl *)GetDlgItem(IDC_RichRx);
-	static Queue_Type qRecData = { 0, 20 };
-	static int cnt=0;
+	
+	static int cnt=0,lastRxCnt=0;
 	//计数就按rxFlashPeriod = 50ms来吧,队列长20
 
-	Quene(DataRx.GetLength(), &qRecData);
-	if (cnt++ == 2)
+	lastRxCnt += DataRx.GetLength();
+	if (++cnt == 10)
 	{
 		//刷新计数
-		tmpStr.Format(_T("接收数据：%d Bytes ,接收速度：%d Bps"), rxCnt, GetQueneSum(&qRecData));
+		tmpStr.Format(_T("接收数据：%d Bytes ,接收速度：%d Bps"), rxCnt, lastRxCnt*2);
 		SetDlgItemText(IDC_GrpRecv, tmpStr);
 		cnt = 0;
+		lastRxCnt = 0;
 	}
 	
+
+
 	if (DataRx.GetLength() != 0)
 	{
 		//用Limt方法不行，其最大值会变
@@ -512,7 +523,7 @@ void CUcomDlg::ReflashRecvEdit(void)
 		}
 		if (isDispRx)
 		{
-			//更新编辑框内容
+			//光标选择最后,更新编辑框内容
 			pRich->SetSel(-1, -1);
 			if (isDispHex)
 			{
@@ -560,7 +571,11 @@ void CUcomDlg::OnLaunch()
 	//dc.MoveTo(rect.left, rect.top);
 
 	//dc.Rectangle(0, 0, 100, 100);
+
 	AfxMessageBox("电子学会欢迎您");
+
+
+	//GetFocus()==GetDlgItem(  )
 }
 
 void CUcomDlg::OnTimer(UINT nIDEvent)
@@ -568,10 +583,10 @@ void CUcomDlg::OnTimer(UINT nIDEvent)
 	// TODO: Add your message handler code here and/or call default
 	switch (nIDEvent)
 	{
-	case TIMER_ID:
+	case AUTO_SEND_TIMER_ID:
 		SendEditBoxData();
 		break;
-	case FLASH_RX_EDITBOX_ID:
+	case FLASH_RX_EDITBOX_TIMER_ID:
 		ReflashRecvEdit();
 		break;
 	default:
@@ -600,12 +615,19 @@ void CUcomDlg::OnCkbSendHex()
 {
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbSendHex))
 	{
-		isSendHex = TRUE;
-		SetDlgItemText(IDC_EditTxData, "");
+		if (isCmdMode) {
+			CButton *pCkb = (CButton *)GetDlgItem(IDC_CkbSendHex);
+			pCkb->SetCheck(BST_UNCHECKED);
+		}
+		else
+		{
+			isSendHex = TRUE;
+			SetDlgItemText(IDC_EditTxData, "");
+		}
 	}
 	else
 		isSendHex = FALSE;
-
+	
 	DataTx.ClearData();
 }
 
@@ -619,7 +641,7 @@ void CUcomDlg::OnChangeEditTxData()
 	CEdit *pEb = (CEdit *)GetDlgItem(IDC_EditTxData);
 	if (isSendHex)
 	{
-		bool isPure = TRUE;
+		bool isPure = true;
 		pCh = strtmp.GetBuffer(0);
 		while (*pCh != '\0')
 		{
@@ -655,20 +677,70 @@ void CUcomDlg::OnChangeEditTxData()
 	else
 	{
 		DataTx.ReString(strtmp);
+
+		//若是CMD模式回车发送(数据包含回车)，并将发送的内容添以特殊格式加到接收框的新行中
+		if (isCmdMode && uartPortIsOpen && (strtmp.Find('\n') != -1)) {
+			CRichEditCtrl *pRich = (CRichEditCtrl*)GetDlgItem(IDC_RichRx);
+			//文字格式结构
+			CHARFORMAT2 cf;
+			//取得文本框当前文字的格式
+			pRich->GetSelectionCharFormat(cf);
+			//删除回车
+			strtmp = DataTx.GetCStrData();
+			strtmp.Remove('\r');
+			strtmp.Remove('\n');
+			//记录历史命令
+			cmdHistory[cmdNextPointer].Empty();
+			cmdHistory[cmdNextPointer] = strtmp;
+			cmdDispPointer = cmdNextPointer;
+			if (++cmdNextPointer == MAX_CMD_HISTORY)
+				cmdNextPointer = 0;
+
+			strtmp.Append("\r\n");
+			mUart.UnblockSend(strtmp);
+			txCnt += strtmp.GetLength();
+
+			cf.dwEffects &= ~CFE_AUTOCOLOR;
+			cf.crTextColor = RGB(240, 60, 60);
+			cf.dwEffects |= CFM_ITALIC | CFM_BOLD;
+			//将文本格式信息设置到文本框当前文本
+			cf.dwMask = CFM_BOLD | CFM_ITALIC | CFM_COLOR;
+
+
+			pRich->SetSel(-1, -1);
+			pRich->ReplaceSel("\r\n" + strtmp);
+
+			if (pRich->GetLineCount() == 2)
+				pRich->SetSel(0, pRich->GetTextLength()-1);//头行特殊判断
+			else
+				pRich->SetSel(pRich->LineIndex(pRich->GetLineCount() - 2) - 1, 
+								pRich->LineIndex(pRich->GetLineCount() - 1));
+			
+			pRich->SetSelectionCharFormat(cf);//设置颜色
+			pRich->SetSel(-1, 0);
+			
+			OnBtnClearSend();
+			//刷新计数
+			strtmp.Format(_T("发送数据：%d Bytes"), txCnt);
+			SetDlgItemText(IDC_GrpSend, strtmp);
+		}
 	}
 }
 
 //接收消息处理
-afx_msg LRESULT CUcomDlg::OnMyMessageProc(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CUcomDlg::OnRxMsgProc(WPARAM wParam, LPARAM lParam)
 {
 	CString strtmp;
+	if (uartPortIsOpen == true)
+	{
+		mUart.UnblockRead(strtmp);
+		rxCnt += strtmp.GetAllocLength();
+		DataRx.AppendString(strtmp, isDispHex);
 
-	mUart.UnblockRead(strtmp);
-	rxCnt += strtmp.GetAllocLength();
-	DataRx.AppendString(strtmp, isDispHex);
+		DataWatchDlg.AddItem(strtmp);
+		GraphDlg.AddDataString(strtmp);
+	}
 
-	DataWatchDlg.AddItem(strtmp);
-	GraphDlg.AddDataString(strtmp);
 	return 0;
 }
 
@@ -819,4 +891,63 @@ void CUcomDlg::OnOK()
 	//回车不退出程序
 	//CDialog::OnOK();
 	return;
+}
+
+
+void CUcomDlg::OnBnClickedBtnsendfile()
+{
+	if (!uartPortIsOpen)
+		return;
+	CSendFile SendFileDlg(this, mUart.GetHandleAddr());
+	SendFileDlg.DoModal();
+}
+
+
+BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
+{
+	CEdit *pEdit= (CEdit*)GetDlgItem(IDC_EditTxData);
+	//按键弹起并且选择按键触发而且焦点在最发送框
+	if (pMsg->message == WM_KEYDOWN 
+		&& GetDlgItem(IDC_EditTxData) == GetFocus())
+	{
+		//上下切换历史命令
+		switch (pMsg->wParam)
+		{
+		case VK_UP:
+			SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+			if (--cmdDispPointer == -1)
+				cmdDispPointer = MAX_CMD_HISTORY - 1;
+			pEdit->SetSel(-1, -1, FALSE);
+			pEdit->SetFocus();
+			break;
+		case VK_DOWN:
+			SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+			if (++cmdDispPointer == MAX_CMD_HISTORY)
+				cmdDispPointer = 0;
+			pEdit->SetSel(-1, -1, FALSE);
+			pEdit->SetFocus();
+			break;
+		default:break;
+		}
+	}
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void CUcomDlg::OnBnClickedCkbcmd()
+{
+	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbCMD))
+	{
+		if (isSendHex != true) {
+			isCmdMode = TRUE;
+		}
+		else
+		{
+			//不支持HEX模式的cmd对话
+			CButton *pCkb = (CButton *)GetDlgItem(IDC_CkbCMD);
+			pCkb->SetCheck(BST_UNCHECKED);
+		}
+	}
+	else
+		isCmdMode = FALSE;
 }
