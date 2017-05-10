@@ -21,12 +21,15 @@ protected:
 
 public:
 	void AddDataString(CString str);
+	void InitCChart(void);
+
 private:
 	HWND hCanvas;
 	RECT rectCanvas;
 	CDC *pCanvas;
 	bool isGraph;
-	void InitCChart(void);
+	
+
 	DECLARE_MESSAGE_MAP()
 public:
 

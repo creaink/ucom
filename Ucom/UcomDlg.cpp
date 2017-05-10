@@ -79,6 +79,8 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_BN_CLICKED(IDC_BtnSendFile, &CUcomDlg::OnBnClickedBtnsendfile)
 //	ON_WM_CHAR()
 ON_BN_CLICKED(IDC_CkbCMD, &CUcomDlg::OnBnClickedCkbcmd)
+ON_WM_SIZE()
+ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 
@@ -87,14 +89,14 @@ END_MESSAGE_MAP()
 BOOL CUcomDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
+	
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	SetWindowText(_T("Ucom v1.02 轻串口 长春理工大学电子学会"));
+	SetWindowText(_T("Ucom v1.03 轻串口 长春理工大学电子学会"));
 
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
@@ -127,10 +129,21 @@ BOOL CUcomDlg::OnInitDialog()
 	DisableCbUart(FALSE);
 
 	SetRichLineSpace();
-	OnBnClickedBtnwinsize();
 
 	cmdNextPointer = 0;
 	cmdDispPointer = 0;
+
+	//获取扩展区矩形
+	CWnd *pWnd = GetDlgItem(IDC_TABEx);
+	pWnd->GetWindowRect(&rectEx);
+	ScreenToClient(&rectEx);   //将控件大小转换为在对话框中的区域坐标
+	//修饰宽度20
+	rectEx.left-=20;
+
+	LargerMode = 0;
+	//修改状态值人工将界面设置为极简模式
+	isLarge = false;
+	OnBnClickedBtnwinsize();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -572,10 +585,8 @@ void CUcomDlg::OnLaunch()
 
 	//dc.Rectangle(0, 0, 100, 100);
 
-	AfxMessageBox("电子学会欢迎您");
+	//AfxMessageBox("电子学会欢迎您");
 
-
-	//GetFocus()==GetDlgItem(  )
 }
 
 void CUcomDlg::OnTimer(UINT nIDEvent)
@@ -706,7 +717,7 @@ void CUcomDlg::OnChangeEditTxData()
 			//将文本格式信息设置到文本框当前文本
 			cf.dwMask = CFM_BOLD | CFM_ITALIC | CFM_COLOR;
 
-
+			int preLen = pRich->GetWindowTextLengthA();
 			pRich->SetSel(-1, -1);
 			pRich->ReplaceSel("\r\n" + strtmp);
 
@@ -718,7 +729,7 @@ void CUcomDlg::OnChangeEditTxData()
 			
 			pRich->SetSelectionCharFormat(cf);//设置颜色
 			pRich->SetSel(-1, 0);
-			
+
 			OnBtnClearSend();
 			//刷新计数
 			strtmp.Format(_T("发送数据：%d Bytes"), txCnt);
@@ -753,33 +764,24 @@ void CUcomDlg::OnClose()
 
 
 void CUcomDlg::OnBnClickedBtnwinsize()
-{
-	static bool isLarge = true;
-	static CRect rectlarge;      //定义没有切割的（即全部的）矩形         
-	static CRect rectsmall;      //定义剩余的小矩形
+{  
+	CRect rectOr;
+	GetWindowRect(&rectOr);
 
-	if (rectlarge.IsRectEmpty())  //如果还没有给大矩形的大小赋值的话，在｛｝中赋值
-	{
-		GetWindowRect(&rectlarge);
-		CRect rectseperator;
-		GetDlgItem(IDC_BtnWinSize)->GetWindowRect(&rectseperator);
-		rectsmall.left = rectlarge.left;
-		rectsmall.top = rectlarge.top;
-		rectsmall.right = rectseperator.right + 20;
-		rectsmall.bottom = rectlarge.bottom;
-	}
-
+	isLarge = !isLarge;
 	if (isLarge)
 	{
-		SetWindowPos(NULL, 0, 0, rectsmall.Width(), rectsmall.Height(), SWP_NOMOVE | SWP_NOZORDER);
+		LargerMode = 2;
+		SetWindowPos(NULL, 0, 0, rectOr.Width()- rectEx.Width(), rectOr.Height(), SWP_NOMOVE | SWP_NOZORDER);
 		SetDlgItemText(IDC_BtnWinSize, "探索>>");
 	}
 	else
 	{
-		SetWindowPos(NULL, 0, 0, rectlarge.Width(), rectlarge.Height(), SWP_NOMOVE | SWP_NOZORDER);
+		LargerMode = 1;
+		SetWindowPos(NULL, 0, 0, rectOr.Width() + rectEx.Width(), rectOr.Height(),SWP_NOMOVE | SWP_NOZORDER);
 		SetDlgItemText(IDC_BtnWinSize, "极简<<");
 	}
-	isLarge = !isLarge;
+
 }
 
 
@@ -906,28 +908,34 @@ void CUcomDlg::OnBnClickedBtnsendfile()
 BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 {
 	CEdit *pEdit= (CEdit*)GetDlgItem(IDC_EditTxData);
+	int len;
 	//按键弹起并且选择按键触发而且焦点在最发送框
 	if (pMsg->message == WM_KEYDOWN 
 		&& GetDlgItem(IDC_EditTxData) == GetFocus())
 	{
+		if (isCmdMode) {
+
 		//上下切换历史命令
 		switch (pMsg->wParam)
 		{
-		case VK_UP:
-			SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
-			if (--cmdDispPointer == -1)
-				cmdDispPointer = MAX_CMD_HISTORY - 1;
-			pEdit->SetSel(-1, -1, FALSE);
-			pEdit->SetFocus();
-			break;
-		case VK_DOWN:
-			SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
-			if (++cmdDispPointer == MAX_CMD_HISTORY)
-				cmdDispPointer = 0;
-			pEdit->SetSel(-1, -1, FALSE);
-			pEdit->SetFocus();
-			break;
-		default:break;
+			case VK_UP:
+				SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+				if (--cmdDispPointer == -1)
+					cmdDispPointer = MAX_CMD_HISTORY - 1;
+				len = pEdit->GetWindowTextLengthA();
+				pEdit->SetSel(len, len);
+				pEdit->SetFocus();
+				break;
+			case VK_DOWN:
+				SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+				if (++cmdDispPointer == MAX_CMD_HISTORY)
+					cmdDispPointer = 0;
+				len = pEdit->GetWindowTextLengthA();
+				pEdit->SetSel(len, len);
+				pEdit->SetFocus();
+				break;
+			default:break;
+			}
 		}
 	}
 
@@ -950,4 +958,87 @@ void CUcomDlg::OnBnClickedCkbcmd()
 	}
 	else
 		isCmdMode = FALSE;
+}
+
+//控件ID为nID向右改变形状，isEnlarge=true是向右增加x(可为负数)像素，否则是以右边界移动
+void CUcomDlg::ChangeItemSize(int nID, int x,int y,bool isEnlarge)
+{
+	CWnd *pWnd;
+	pWnd = GetDlgItem(nID);
+	if (pWnd != NULL)
+	{
+		CRect rec;
+		int width,height;
+		pWnd->GetWindowRect(&rec);  //获取控件变化前的大小
+		ScreenToClient(&rec);   //将控件大小装换位在对话框中的区域坐标
+		width = rec.Width();
+		height = rec.Height();
+		if (isEnlarge) {
+			rec.right = rec.right + x;
+			rec.bottom = rec.bottom + y;
+		}else{
+			rec.left = rec.left + x;
+			rec.top = rec.top + y;
+
+			rec.right = rec.left + width;
+			rec.bottom = rec.top + height;
+		}
+		pWnd->MoveWindow(rec);//伸缩控件
+	}
+}
+
+void CUcomDlg::OnSize(UINT nType, int cx, int cy)
+{
+	static int lastCx=0, lastCy=0;
+
+	CDialog::OnSize(nType, cx, cy);
+	if (LargerMode) {
+		lastCx = cx;
+		LargerMode = 0;
+		return;
+	}
+	
+	if (nType== SIZE_RESTORED)
+	{
+		int dX = cx - lastCx;
+		//int dY = cy - lastCy;
+		int dY = 0;//禁止上下调整
+
+		ChangeItemSize(IDC_RichRx, dX, dY, true);
+		ChangeItemSize(IDC_EditTxData, dX, dY, true);
+		ChangeItemSize(IDC_GrpSend, dX, dY, true);
+		ChangeItemSize(IDC_GrpRecv, dX, dY, true);
+
+		ChangeItemSize(IDC_TABEx, dX, dY, false);
+
+		ChangeItemSize(IDC_CkbCMD, dX, dY, false);
+		ChangeItemSize(IDC_BtnSendFile, dX, dY, false);
+		ChangeItemSize(IDC_BtnToolBox, dX, dY, false);
+		ChangeItemSize(IDC_BtnHelp, dX, dY, false);
+		ChangeItemSize(IDC_Launch, dX, dY, false);
+		ChangeItemSize(IDC_BtnWinSize, dX, dY, false);
+		
+		//step=1;
+	}
+	//窗口最小化避免
+	if (cx!=0)
+		lastCx = cx;
+}
+
+
+void CUcomDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	//强制窗口大小的最值,不要使用绝对大小，会有兼容性问题
+	lpMMI->ptMinTrackSize.y = rectEx.Height() + 55;
+	lpMMI->ptMaxTrackSize.y = lpMMI->ptMinTrackSize.y;//禁止上下调整
+
+	if (isLarge)
+	{
+		lpMMI->ptMinTrackSize.x = 500;
+	}
+	else
+	{
+		lpMMI->ptMinTrackSize.x = 500+rectEx.Width();
+	}
+	CDialog::OnGetMinMaxInfo(lpMMI);
 }

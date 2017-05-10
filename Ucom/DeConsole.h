@@ -10,6 +10,7 @@
 
 using std::cin;
 using std::cout;
+using std::endl;
 
 inline void InitDebugConsole(void){
 	AllocConsole();

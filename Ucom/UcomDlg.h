@@ -71,11 +71,17 @@ public:
 	int encoderMode;
 
 private:
-	#define MAX_CMD_HISTORY 7
+	#define MAX_CMD_HISTORY 10
 	BOOL PreTranslateMessage(MSG* pMsg);
 	int cmdNextPointer, cmdDispPointer;
 	CString cmdHistory[MAX_CMD_HISTORY];
 
+	int LargerMode;
+	bool isLarge;
+	void ChangeItemSize(int nID, int x, int y, bool isEnlarge);
+	int MaxWndHeight;
+
+	CRect rectEx;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV Ö§³Ö
 
@@ -110,7 +116,6 @@ protected:
 	afx_msg void OnMeudevmanger();
 	afx_msg void OnMeucalc();
 	afx_msg void OnMeunotepad();
-	afx_msg void OnMeuascii();
 	afx_msg void OnMenureg();
 	afx_msg void OnMenucmd();
 	afx_msg void OnMenuserv();
@@ -133,4 +138,7 @@ public:
 //	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnBnClickedBtnsendfile();
 	afx_msg void OnBnClickedCkbcmd();
+
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };

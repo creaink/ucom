@@ -141,6 +141,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resource.hm" />
+    <None Include="res\hand1.cur" />
+    <None Include="res\hand2.cur" />
     <None Include="res\Ucom.rc2" />
   </ItemGroup>
   <ItemGroup>

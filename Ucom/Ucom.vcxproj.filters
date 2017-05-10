@@ -102,6 +102,12 @@
     <None Include="resource.hm">
       <Filter>头文件</Filter>
     </None>
+    <None Include="res\hand1.cur">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\hand2.cur">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Ucom.ico">
