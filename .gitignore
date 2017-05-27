@@ -45,6 +45,7 @@ build/
 *.pidb
 *.log
 *.scc
+*.html
 
 # Visual C++ cache files
 ipch/
@@ -156,3 +157,5 @@ $RECYCLE.BIN/
 .DS_Store
 *.db
 *.opendb
+/Ucom/ChartCtrl/html
+/Ucom/script

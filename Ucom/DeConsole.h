@@ -1,6 +1,7 @@
 #pragma once
 
-/*控制台调试*/
+/*控制台调试
+ 使用cout输出调试信息*/
 //#define USING_CONSLOE
 #ifdef USING_CONSLOE
 

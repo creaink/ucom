@@ -81,6 +81,7 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 ON_BN_CLICKED(IDC_CkbCMD, &CUcomDlg::OnBnClickedCkbcmd)
 ON_WM_SIZE()
 ON_WM_GETMINMAXINFO()
+ON_STN_CLICKED(IDC_PicUartStatus, &CUcomDlg::OnClickedPicuartstatus)
 END_MESSAGE_MAP()
 
 
@@ -89,14 +90,15 @@ END_MESSAGE_MAP()
 BOOL CUcomDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+	CRect rec;
+
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	SetWindowText(_T("Ucom v1.03 轻串口 长春理工大学电子学会"));
+	SetWindowText(_T("Ucom v1.04 轻串口 长春理工大学电子学会"));
 
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
@@ -133,12 +135,19 @@ BOOL CUcomDlg::OnInitDialog()
 	cmdNextPointer = 0;
 	cmdDispPointer = 0;
 
+
+	
 	//获取扩展区矩形
 	CWnd *pWnd = GetDlgItem(IDC_TABEx);
 	pWnd->GetWindowRect(&rectEx);
 	ScreenToClient(&rectEx);   //将控件大小转换为在对话框中的区域坐标
+	
+	GetDlgItem(IDC_GrpRecv)->GetWindowRect(&rec);
+	ScreenToClient(&rec);
 	//修饰宽度20
-	rectEx.left-=20;
+	//rectEx.left-=20;
+	rectEx.left = (rec.right+ rectEx.left) / 2-5;
+
 
 	LargerMode = 0;
 	//修改状态值人工将界面设置为极简模式
@@ -173,6 +182,15 @@ void CUcomDlg::OnPaint()
 	else
 	{
 		CDialog::OnPaint();
+	}
+
+	//避免最小化后恢复出现图片不显示的情况
+	if (uartPortIsOpen) {
+		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOn);
+	}
+	else
+	{
+		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOff);
 	}
 }
 
@@ -304,6 +322,13 @@ void CUcomDlg::OnBtnOpen()
 {
 	OpenUart();
 }
+//点击图片打开关闭串口
+void CUcomDlg::OnClickedPicuartstatus()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OpenUart();
+}
+
 
 void CUcomDlg::InitCbBuart(void)
 {
@@ -352,8 +377,7 @@ void CUcomDlg::InitCbBuart(void)
 	TRACE("Add ok");
 }
 
-
-
+//初始化注册表数据
 bool CUcomDlg::InitRegData(void)
 {
 	CString tmp = AfxGetApp()->GetProfileString("Config", "BDSE", "NULL");
@@ -362,7 +386,7 @@ bool CUcomDlg::InitRegData(void)
 	else
 		return true;
 }
-
+//写入注册表数据
 void CUcomDlg::WriteRegData(void)
 {
 	CComboBox *pCombox;
@@ -416,6 +440,8 @@ void CUcomDlg::LoadRegConfig()
 
 		pRich->SetDefaultCharFormat(cf);
 		pRich->SetBackgroundColor(false, backgroudColor);
+		//初次运行输出帮助信息
+		OnBnClickedBtnhelp();
 	}
 	else
 	{
@@ -525,8 +551,6 @@ void CUcomDlg::ReflashRecvEdit(void)
 		lastRxCnt = 0;
 	}
 	
-
-
 	if (DataRx.GetLength() != 0)
 	{
 		//用Limt方法不行，其最大值会变
@@ -585,8 +609,7 @@ void CUcomDlg::OnLaunch()
 
 	//dc.Rectangle(0, 0, 100, 100);
 
-	//AfxMessageBox("电子学会欢迎您");
-
+	AfxMessageBox("电子学会欢迎您");
 }
 
 void CUcomDlg::OnTimer(UINT nIDEvent)
@@ -762,7 +785,7 @@ void CUcomDlg::OnClose()
 	CDialog::OnClose();
 }
 
-
+//扩展按钮回调函数
 void CUcomDlg::OnBnClickedBtnwinsize()
 {  
 	CRect rectOr;
@@ -827,7 +850,7 @@ void CUcomDlg::OnBnClickedBtnsaverx()
 	}
 }
 
-
+//切换选项卡
 void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -888,9 +911,9 @@ void CUcomDlg::OnBnClickedBtnencoder()
 
 }
 
+//回车不退出程序
 void CUcomDlg::OnOK()
 {
-	//回车不退出程序
 	//CDialog::OnOK();
 	return;
 }
@@ -970,7 +993,7 @@ void CUcomDlg::ChangeItemSize(int nID, int x,int y,bool isEnlarge)
 		CRect rec;
 		int width,height;
 		pWnd->GetWindowRect(&rec);  //获取控件变化前的大小
-		ScreenToClient(&rec);   //将控件大小装换位在对话框中的区域坐标
+		ScreenToClient(&rec);   //将控件大小转换为在对话框中的区域坐标
 		width = rec.Width();
 		height = rec.Height();
 		if (isEnlarge) {
@@ -998,7 +1021,7 @@ void CUcomDlg::OnSize(UINT nType, int cx, int cy)
 		return;
 	}
 	
-	if (nType== SIZE_RESTORED)
+	if (nType == SIZE_RESTORED)
 	{
 		int dX = cx - lastCx;
 		//int dY = cy - lastCy;

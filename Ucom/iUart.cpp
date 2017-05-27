@@ -237,63 +237,35 @@ UINT RxThreadFunc(LPVOID mThreadPara)
 	}
 	TRACE("Rx Listenner Thread Start\n");
 
-	while (pPara->stopFlag != RT_REQ_EXIT)
+	while (1)
 	{
 		ClearCommError(hComm, &dwErrorFlags, &ComStat);
 	
 		if (ComStat.cbInQue)
 		{
-			pPara->stopFlag = RT_NOT_EXIT;
 			///有数据发送消息给UI线程
 			//发送消息过程中触发线程退出，错误?
 			::SendMessage(::AfxGetMainWnd()->m_hWnd, WM_COMM_RX_MSG, 1, 0);
-			pPara->stopFlag = RT_PRE_EXIT;
 		}
 		dwMask = 0;
 		//等待事件
 		if (!WaitCommEvent(hComm, &dwMask, &os))
 		{
-			if (pPara->stopFlag == 1 && GetLastError() == ERROR_IO_PENDING)
+			if (GetLastError() == ERROR_IO_PENDING)
 			{
 				GetOverlappedResult(hComm, &os, &dwTrans, TRUE);
 			}
 			else
 			{
 				CloseHandle(os.hEvent);
-				pPara->stopFlag = RT_SUC_EXIT;
 				return(UINT)-1;
 			}
 		}
 
 	}
 	CloseHandle(os.hEvent);
-	pPara->stopFlag = RT_SUC_EXIT;
 	TRACE("Rx Listenner Thread Stop\n");
 	return EXIT_SUCCESS;
-}
-
-
-void iUart::CloseWaitThread(void)
-{
-	TRACE("TrigStop\n");
-
-	for (int i = 0; i < 100000; i++)
-	{
-		if (mThreadPara.stopFlag == RT_PRE_EXIT)
-			break;
-	}
-	//while (mThreadPara.stopFlag != RT_PRE_EXIT);
-	mThreadPara.stopFlag = RT_REQ_EXIT;
-	TRACE("Req ok\n");
-	for (int i = 0; i < 20; i++)
-	{
-		Sleep(10);
-		if (mThreadPara.stopFlag == RT_SUC_EXIT){
-			TRACE("Exit ok\n");
-			break;
-		}
-	}
-	//while (mThreadPara.stopFlag == 0);
 }
 
 

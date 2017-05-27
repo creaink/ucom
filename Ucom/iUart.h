@@ -74,7 +74,6 @@ public:
 		mThreadPara.stopFlag = RT_PRE_EXIT;
 		return &mThreadPara;
 	}
-	void CloseWaitThread(void);
 
 };
 
