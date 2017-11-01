@@ -153,6 +153,18 @@
     <ClInclude Include="GraphFull.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="UartDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="iSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ucom.cpp">
@@ -258,6 +270,15 @@
       <Filter>Chart</Filter>
     </ClCompile>
     <ClCompile Include="GraphFull.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UartDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="iSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

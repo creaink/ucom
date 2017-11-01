@@ -12,6 +12,13 @@
 #include "MultiSend.h"
 #include "SendFile.h"
 
+#include "UBase.h"
+#include "UartDlg.h"
+#include "NetDlg.h"
+
+
+//typedef  AsyncSendX* AsyncSendX;
+//typedef  IsOpenX* IsOpenX;
 
 #define AUTO_SEND_TIMER_ID 100
 #define FLASH_RX_EDITBOX_TIMER_ID 101
@@ -29,46 +36,47 @@ public:
 public:
 	const int rxFlashPeriod = 50;
 
-	//是否有可用串口
-	bool uartPortIsOpen;
 	bool isNewLineSend;
 	bool isDispHex, isSendHex, isDispRx, isRxFullClc,isCmdMode;
 	int rxCnt, txCnt, limitBytes;
 
+	/*
+	//串口面板操作
+	iUart mUart;
 	void InitCbBuart(void);
 	void DisableCbUart(bool choose);
 	DCB GetUartConfigDCB(void);
-
 	void ChangeBmpPic(int PicCtrlID, unsigned short  nPicID);
-
 	bool IsUartPortAvailable(void);
-	void ReflashRecvEdit(void);
-
 	void OpenUart(void);
+	bool uartPortIsOpen;
+	HANDLE hRxThread;
+	*/
+	void LoadRegConfig();
+	bool InitRegData(void);
+	void WriteRegData(void);
+
+	void ReflashRecvEdit(void);
 	void SendEditBoxData();
 	void SetDelaySend(void);
 
-	HANDLE hRxThread;
-
-	iUart mUart;
 	TextBank DataRx, DataTx;
 
 	void SetRichLineSpace(void);
 	void SetFullBytes(int nbytes = -1);
 
 	DWORD backgroudColor;
-	void LoadRegConfig();
-	bool InitRegData(void);
-	void WriteRegData(void);
-	void GetRegData(CString &comName, CString &dcbConfig);
 
-	CGraphDlg GraphDlg;
-	CEncoder EncoderDlg;
-	CDataWatch DataWatchDlg;
-	CMultiSend MultiSendDlg;
 	void InitTabEx(void);
+	void InitTabSrc(void);
 
 	int encoderMode;
+
+	void SwitchCurDataSrc(int dataSrc);
+	int curDataSrc;
+	AsyncSendX xAsyncSend;
+	AsyncReadX xAsyncRead;
+	IsOpenX	xIsOpen;
 
 private:
 	#define MAX_CMD_HISTORY 10
@@ -81,6 +89,13 @@ private:
 	void ChangeItemSize(int nID, int x, int y, bool isEnlarge);
 	int MaxWndHeight;
 
+	CGraphDlg GraphDlg;
+	CEncoder EncoderDlg;
+	CDataWatch DataWatchDlg;
+	CMultiSend MultiSendDlg;
+
+	CUartDlg UartDlg;
+	CNetDlg NetDlg;
 	CRect rectEx;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
@@ -94,10 +109,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnBtnOpen();
 	afx_msg void OnBtnSend();
-	afx_msg void OnDropdownCbUartPort();
-	afx_msg void OnSelendokCbUartPort();
 	afx_msg void OnLaunch();
 	afx_msg void OnBtnClearRecv();
 	afx_msg void OnBtnClearSend();
@@ -110,7 +122,6 @@ protected:
 	afx_msg void OnChangeEditTxData();
 	afx_msg void OnCkbSendHex();
 	afx_msg void OnBnClickedBtnisdisprx();
-	afx_msg LRESULT OnRxMsgProc(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedBtntoolbox();
 	afx_msg void OnMeudevmanger();
@@ -135,11 +146,11 @@ public:
 	afx_msg void OnBnClickedBtnencoder();
 	afx_msg void OnBnClickedBtnsend2();
 	virtual void OnOK();
-//	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnBnClickedBtnsendfile();
 	afx_msg void OnBnClickedCkbcmd();
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
-	afx_msg void OnClickedPicuartstatus();
+	afx_msg LRESULT OnMyReceiveMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnSelchangeTabsrc(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -34,6 +34,7 @@ void TextBank::AppendString(CString &mStr, bool isHexFormat)
 	}
 	else
 	{
+		//memccpy(DataStr., mStr, nBytes);
 		//¿½±´'0'
 		for (int i = 0; i < nBytes; i++)
 		{

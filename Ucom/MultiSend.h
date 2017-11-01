@@ -2,14 +2,17 @@
 
 
 // CMultiSend 对话框
+// 发送助手
 #include "Text.h"
+#include "UBase.h"
+
 #define LOOP_SEND_ID 1020
 class CMultiSend : public CDialog
 {
 	DECLARE_DYNAMIC(CMultiSend)
 
 public:
-	CMultiSend::CMultiSend(CWnd* pParent, bool *pUartOpenStatus, HANDLE *hUART);
+	CMultiSend::CMultiSend(CWnd* pParent, AsyncSendX* send, IsOpenX* isOpen);
 	virtual ~CMultiSend();
 
 // 对话框数据
@@ -19,18 +22,15 @@ public:
 private:
 	bool isHotKey;
 	void LoppSendSet(void);
-	bool *pIsUartOpen;
-	HANDLE *hUartCom;
-
-	OVERLAPPED m_osRead;
-	OVERLAPPED m_osWrite;
 
 	TextBank txData;
 	void SendEdbox(int index);
 	int UnblockSend(const CString &dataStr);
 	void OnTimeSend(bool clearcnt=false);
-	BOOL CMultiSend::PreTranslateMessage(MSG* pMsg);
+	BOOL PreTranslateMessage(MSG* pMsg);
 
+	AsyncSendX* ucomAsyncSend;
+	IsOpenX*  ucomIsOpen;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

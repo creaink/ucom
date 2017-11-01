@@ -1,24 +1,14 @@
 #pragma once
 
-#define WM_COMM_RX_MSG  (WM_USER + 2)
+#include "UBase.h"
 
 typedef struct
 {
 	//串口句柄
 	HANDLE *commHandle;
-	//线程终止标志
-	int stopFlag;
+	//未使用
+	int other;
 }ThreadPara;
-
-///线程请求
-//主动：请求退出
-#define RT_REQ_EXIT 0
-//被动：可以退出
-#define RT_PRE_EXIT 1
-//被动：不可以退出
-#define RT_NOT_EXIT 2
-//被动：退出成功
-#define RT_SUC_EXIT 3
 
 
 class iUart
@@ -31,7 +21,7 @@ private:
 	OVERLAPPED m_osRead;
 	OVERLAPPED m_osWrite;
 	ThreadPara mThreadPara;
-	void CleanCommErr(void);
+
 public:
 
 	iUart(){
@@ -71,7 +61,7 @@ public:
 			return true;
 	}
 	ThreadPara *GetThreadStartPara(void){
-		mThreadPara.stopFlag = RT_PRE_EXIT;
+		mThreadPara.other = 0;
 		return &mThreadPara;
 	}
 

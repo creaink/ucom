@@ -20,40 +20,12 @@ void CUcomDlg::OnBnClickedBtnsend2()
 
 void CUcomDlg::OnBtnSend()
 {
-	if (uartPortIsOpen == TRUE)
+	if (xIsOpen() == TRUE)
 	{
 		SendEditBoxData();
 	}
 }
-
-//端口下拉长度控制
-void CUcomDlg::OnDropdownCbUartPort()
-{
-	int DropSize;
-	CComboBox *pComBox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	DropSize = pComBox->GetItemHeight(0)*pComBox->GetCount();
-	pComBox->SetDroppedWidth(DropSize);
-}
-
-//选取最后一项刷新动作
-void CUcomDlg::OnSelendokCbUartPort()
-{
-	CComboBox *pComBox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	int sel = pComBox->GetCurSel();
-	int cnt = pComBox->GetCount();
-
-	CString str;
-	//末尾刷新串口
-	if (sel == (cnt - 1))
-	{
-		//clear all
-		pComBox->ResetContent();
-		mUart.GetComList((CComboBox *)GetDlgItem(IDC_CbUartPort));
-
-		//选取第一个
-		pComBox->SetCurSel(0);
-	}
-}
+\
 
 void CUcomDlg::OnBtnClearRecv()
 {
@@ -129,7 +101,7 @@ void CUcomDlg::OnBnClickedBtnhelp()
 13.透明传输，不会阻碍0x00,0x11等字节的发送接收\n\
 14.支持文件发送，建议不要发送太大的文件\n\
 15.支持AT模式，回车发送数据(数据包含回车)，发送的数据同时以特殊格式添到接收显示的新\n\
-     行中上下调用历史命令(数据)\n\
+     行中上下调用历史命令(数据)，输入框内按Tab在开头补上 AT+ \n\
 16.支持横向窗口大小调整\n\n\
 a.接收图表，支持指定格式数值分拣、图形化显示，格式:空格+通道(0-5)+':'+数据，帧尾换行\n\
      如:“ 0:%d 1:%f\\n”,最多六通，保存的数据文件用Excel打开后另存为表格方便后续分析\n\
@@ -152,7 +124,7 @@ void CUcomDlg::SetDelaySend(void)
 	{
 		int time = GetDlgItemInt(IDC_EdbSendDelay);
 		//不能选择
-		if (time <= 0 || uartPortIsOpen == FALSE)
+		if (time <= 0 || xIsOpen() == FALSE)
 		{
 			CButton *pCkb = (CButton *)GetDlgItem(IDC_CkbSendOnTime);
 			pCkb->SetCheck(BST_UNCHECKED);

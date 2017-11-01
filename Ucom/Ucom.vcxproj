@@ -143,12 +143,16 @@
     <ClInclude Include="Encoder.h" />
     <ClInclude Include="GraphDlg.h" />
     <ClInclude Include="GraphFull.h" />
+    <ClInclude Include="iSocket.h" />
     <ClInclude Include="iUart.h" />
     <ClInclude Include="MultiSend.h" />
+    <ClInclude Include="NetDlg.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="UartDlg.h" />
+    <ClInclude Include="UBase.h" />
     <ClInclude Include="Ucom.h" />
     <ClInclude Include="UcomDlg.h" />
   </ItemGroup>
@@ -180,14 +184,17 @@
     <ClCompile Include="Encoder.cpp" />
     <ClCompile Include="GraphDlg.cpp" />
     <ClCompile Include="GraphFull.cpp" />
+    <ClCompile Include="iSocket.cpp" />
     <ClCompile Include="iUart.cpp" />
     <ClCompile Include="MultiSend.cpp" />
+    <ClCompile Include="NetDlg.cpp" />
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="UartDlg.cpp" />
     <ClCompile Include="Ucom.cpp" />
     <ClCompile Include="UcomDlg.cpp" />
     <ClCompile Include="UcomDlgBase.cpp" />

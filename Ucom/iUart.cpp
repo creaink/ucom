@@ -72,6 +72,8 @@ bool iUart::OpenCom(bool isBlockMode){
 	SetCommTimeouts(hCom, &TimeOuts); //设置超时
 	hUartCom=hCom;
 	TRACE("h:%p\n",hUartCom);
+	
+	/* 串口配置结构体 */
 	DCB dcb;
 	GetCommState(hCom, &dcb);
 	///设置详情参看DCB串口结构体
@@ -82,18 +84,44 @@ bool iUart::OpenCom(bool isBlockMode){
 
 	TRACE("open: baud:%d,size:%d,stop:%d,ecc:%d\n", uartConfig.BaudRate,
 		uartConfig.ByteSize, uartConfig.StopBits, uartConfig.Parity);
-	//取消流控制
-	dcb.fRtsControl = RTS_CONTROL_DISABLE; //CTS
-	dcb.fDtrControl = DTR_CONTROL_DISABLE;	//DSR,RLSD
-	//其他设置
-	dcb.fBinary = uartConfig.fBinary;
-	//接收0字符
+	
+	//是否监控CTS(clear-to-send)信号来做输出流控
+	//当设置为true时： 若CTS为低电平，则数据发送将被挂起，直至CTS变为高
+	dcb.fOutxCtsFlow = false;
+	
+	// 本机DSR<-对方DTR
+	// 本机DTR->对方DSR
+	// 本机RTS->对方CTS
+	// 本机CTS<-对方RTS
+	//RTS_CONTROL_DISABLE/ENABLE打开设备时置RTS信号为什么电平
+	//可以调用EscapeCommFunction函数来改变RTS线电平状态
+	//RTS_CONTROL_HANDSHAKE 允许RTS信号握手，此时应用程序不能调用EscapeCommFunction函数
+	//有空间接收数据时，驱动程序置RTS为高以接收，否则置低
+	//RTS_CONTROL_TOGGLE 有字节要发送时RTS变高，当所有缓冲字节已被发送完毕后，RTS变低
+	dcb.fRtsControl = RTS_CONTROL_DISABLE;
+	//RTS的改变影响对方的CTS
+	//当设置为true时若CTS为低电平(对方RTS低)则数据发送将被挂起，直至CTS变为高
+	dcb.fOutxCtsFlow = false;
+	
+	//本机DTR->对方DSR，使用和RTS和RTS一样
+	dcb.fDtrControl = DTR_CONTROL_DISABLE;
+	dcb.fOutxDsrFlow = false;
+
+	// 设置流控制信号 SETRTS,CLRRTS,SETDTR,CLRDTR
+	// EscapeCommFunction(mUart.GetHandle(), SETRTS);
+	// 读取需要GetCommMask设置，然后WaitCommEvent等待，需要开一个线程
+
+
+	//指定是否允许二进制模式，Win32 API不支持非二进制模式传输，应设true 
+	dcb.fBinary = true;
+	//接收0字符，为TRUE时，接收时自动去掉空（0值）字节 
 	dcb.fNull = false;
-	//关掉
+
+	//关掉输入输出的 XON/XOFF流量控制
 	dcb.fInX = false;
 	dcb.fOutX = false;
-	//dcb.XonChar = XON; //请求发送方继续发送时的字符 0x11  
-	//dcb.XoffChar = XOFF; //请求发送方停止发送时的字符 0x13  
+	//dcb.XonChar = XON; //指定XON，请求发送方继续发送时的字符 0x11  
+	//dcb.XoffChar = XOFF; //指定XOFF，请求发送方停止发送时的字符 0x13  
 	//dcb.XonLim = 50;
 	//dcb.XoffLim = 50;
 
@@ -117,8 +145,6 @@ bool iUart::ConfigUart(CString comName,DCB mConfig)
 	uartConfig.ByteSize = mConfig.ByteSize;
 	uartConfig.Parity = mConfig.Parity;
 	uartConfig.StopBits = mConfig.StopBits;
-	uartConfig.fBinary = true;
-	
 
 	return true;
 }
@@ -142,8 +168,8 @@ void iUart::GetComList(CComboBox *cblist)
 			memset(commName, 0, sizeof(commName));
 
 			rtn = RegEnumValue(hKey, i, portName, &dwLong, NULL, NULL, (PUCHAR)commName, &dwSize);
-
-			if (rtn == ERROR_NO_MORE_ITEMS)   //   枚举串口     
+			//枚举串口
+			if (rtn == ERROR_NO_MORE_ITEMS)
 				break; 
 			//插入列表
 			cblist->AddString(commName);
@@ -245,7 +271,8 @@ UINT RxThreadFunc(LPVOID mThreadPara)
 		{
 			///有数据发送消息给UI线程
 			//发送消息过程中触发线程退出，错误?
-			::SendMessage(::AfxGetMainWnd()->m_hWnd, WM_COMM_RX_MSG, 1, 0);
+			::PostMessage(HWND_BROADCAST, WM_MYONRECVMSG, W_UART_RECV, 0);
+			//::SendMessage(::AfxGetMainWnd()->m_hWnd, WM_COMM_RX_MSG, 1, 0);
 		}
 		dwMask = 0;
 		//等待事件
@@ -324,7 +351,7 @@ int iUart::UnblockSend(const CString &dataStr)
 	//dwLength = dataStr.GetAllocLength();
 	//append方式添加就得GetLength才能的出来正确计数（GetAllocLength有bug），好像GetLength不是以'\0'来算的
 	dwLength = dataStr.GetLength();
-	bWriteStatus = WriteFile(hUartCom, dataStr, dwLength, &dwLength, &m_osWrite);
+	bWriteStatus = WriteFile(hUartCom, (LPCTSTR)dataStr, dwLength, &dwLength, &m_osWrite);
 
 	if (!bWriteStatus)
 	{

@@ -2,7 +2,7 @@
 
 /*控制台调试
  使用cout输出调试信息*/
-//#define USING_CONSLOE
+#define USING_CONSLOE
 #ifdef USING_CONSLOE
 
 #include <iostream>
@@ -12,6 +12,9 @@
 using std::cin;
 using std::cout;
 using std::endl;
+
+using std::hex;
+using std::dec;
 
 inline void InitDebugConsole(void){
 	AllocConsole();

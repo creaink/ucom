@@ -18,8 +18,8 @@
 
 CUcomDlg::CUcomDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CUcomDlg::IDD, pParent)
-, DataRx(), DataTx(), mUart()
-, MultiSendDlg(this, &uartPortIsOpen,mUart.GetHandleAddr())
+, DataRx(), DataTx()
+, MultiSendDlg(this, &xAsyncSend, &xIsOpen)
 {
 	//{{AFX_DATA_INIT(CUcomDlg)
 	//}}AFX_DATA_INIT
@@ -36,10 +36,7 @@ void CUcomDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BtnOpen, OnBtnOpen)
 	ON_BN_CLICKED(IDC_BtnSend, OnBtnSend)
-	ON_CBN_DROPDOWN(IDC_CbUartPort, OnDropdownCbUartPort)
-	ON_CBN_SELENDOK(IDC_CbUartPort, OnSelendokCbUartPort)
 	ON_BN_CLICKED(IDC_Launch, OnLaunch)
 	ON_BN_CLICKED(IDC_BtnClearRecv, OnBtnClearRecv)
 	ON_BN_CLICKED(IDC_BtnClearSend, OnBtnClearSend)
@@ -52,8 +49,6 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_EN_CHANGE(IDC_EditTxData, OnChangeEditTxData)
 	ON_BN_CLICKED(IDC_CkbSendHex, OnCkbSendHex)
 	ON_BN_CLICKED(IDC_BtnIsDispRx, OnBnClickedBtnisdisprx)
-	ON_MESSAGE(WM_COMM_RX_MSG, &CUcomDlg::OnRxMsgProc)
-
 
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BtnToolBox, &CUcomDlg::OnBnClickedBtntoolbox)
@@ -77,11 +72,12 @@ BEGIN_MESSAGE_MAP(CUcomDlg, CDialog)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TABEx, &CUcomDlg::OnSelchangeTabex)
 	ON_BN_CLICKED(IDC_BtnEncoder, &CUcomDlg::OnBnClickedBtnencoder)
 	ON_BN_CLICKED(IDC_BtnSendFile, &CUcomDlg::OnBnClickedBtnsendfile)
+	ON_REGISTERED_MESSAGE(WM_MYONRECVMSG, &CUcomDlg::OnMyReceiveMsg)
 //	ON_WM_CHAR()
 ON_BN_CLICKED(IDC_CkbCMD, &CUcomDlg::OnBnClickedCkbcmd)
 ON_WM_SIZE()
 ON_WM_GETMINMAXINFO()
-ON_STN_CLICKED(IDC_PicUartStatus, &CUcomDlg::OnClickedPicuartstatus)
+ON_NOTIFY(TCN_SELCHANGE, IDC_TABSrc, &CUcomDlg::OnSelchangeTabsrc)
 END_MESSAGE_MAP()
 
 
@@ -107,9 +103,6 @@ BOOL CUcomDlg::OnInitDialog()
 #ifdef USING_CONSLOE
 	InitDebugConsole();
 #endif
-
-	hRxThread = NULL;
-	uartPortIsOpen = false;
 	isNewLineSend = false;
 	isDispHex = false;
 	isSendHex = false;
@@ -120,16 +113,12 @@ BOOL CUcomDlg::OnInitDialog()
 	txCnt = 0;
 
 	InitTabEx();
+	InitTabSrc();
 
-	InitCbBuart();
-	//装载注册表数据
-	LoadRegConfig();
 	SetDlgItemInt(IDC_EdbSendDelay, 1000);
 	SetDlgItemInt(IDC_EdbFullBytes, 5120);
 
-	
-	DisableCbUart(FALSE);
-
+	LoadRegConfig();
 	SetRichLineSpace();
 
 	cmdNextPointer = 0;
@@ -184,14 +173,6 @@ void CUcomDlg::OnPaint()
 		CDialog::OnPaint();
 	}
 
-	//避免最小化后恢复出现图片不显示的情况
-	if (uartPortIsOpen) {
-		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOn);
-	}
-	else
-	{
-		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOff);
-	}
 }
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
@@ -202,209 +183,15 @@ HCURSOR CUcomDlg::OnQueryDragIcon()
 }
 
 
-void CUcomDlg::ChangeBmpPic(int PicCtrlID, unsigned short nPicID)
-{
-	CBitmap bitmap;
-	HBITMAP hBmp;
-	CStatic *pStatic = (CStatic*)GetDlgItem(PicCtrlID);
-
-	bitmap.LoadBitmap(nPicID);				// 将位图IDB_BITMAP1加载到bitmap   
-	hBmp = (HBITMAP)bitmap.GetSafeHandle();  // 获取bitmap加载位图的句柄
-
-	pStatic->SetBitmap(hBmp);				// 设置图片控件
-}
-
-//从空间得到配置信息字符串
-DCB CUcomDlg::GetUartConfigDCB(void)
-{
-	DCB configDCB;
-	CString tmpStr, UartConfig;
-	CComboBox *pCombox;
-
-	//设定串口参数
-	pCombox = (CComboBox*)GetDlgItem(IDC_CbUartBaudrate);
-	pCombox->GetLBText(pCombox->GetCurSel(), tmpStr);
-	configDCB.BaudRate = _ttoi(tmpStr);
-
-	pCombox = (CComboBox*)GetDlgItem(IDC_CbUartECC);
-	configDCB.Parity = pCombox->GetCurSel();
-
-	pCombox = (CComboBox*)GetDlgItem(IDC_CbUartDatabit);
-	pCombox->GetLBText(pCombox->GetCurSel(), tmpStr);
-	configDCB.ByteSize = atoi(tmpStr);
-
-	pCombox = (CComboBox*)GetDlgItem(IDC_CbUartStopbit);
-	configDCB.StopBits = pCombox->GetCurSel();
-
-	return configDCB;
-}
-
-bool CUcomDlg::IsUartPortAvailable(void)
-{
-	CString comInfo;
-	CComboBox *pCombox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	pCombox->GetLBText(pCombox->GetCurSel(), comInfo);
-
-	if (comInfo.Left(3) == _T("COM"))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-
-void CUcomDlg::OpenUart()
-{
-	CButton *pButton;
-	CComboBox *pCombox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	CString strtmp;
-
-	if (uartPortIsOpen == FALSE)
-	{
-		//如果占用就取消占用
-		if (mUart.isConnected())
-			mUart.ClosePort();
-
-		if (IsUartPortAvailable())
-		{
-			pCombox->GetLBText(pCombox->GetCurSel(), strtmp);
-			mUart.ConfigUart(strtmp, GetUartConfigDCB());
-		}
-		else
-		{
-			AfxMessageBox(_T("串口无效,请刷新"));
-			return;
-		}
-
-		if (!mUart.OpenCom())
-		{
-			AfxMessageBox(_T("打开串口失败"));
-			return;
-		}
-
-		//创建接收线程
-		hRxThread = AfxBeginThread(RxThreadFunc, mUart.GetThreadStartPara(), THREAD_PRIORITY_NORMAL);
-		if (hRxThread == NULL){
-			TRACE("Rx Listenner Thread Created Failed");
-			return;
-		}
-
-		pButton = (CButton*)GetDlgItem(IDC_BtnOpen);
-		SetDlgItemText(IDC_BtnOpen, _T("关闭串口"));
-		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOn);
-
-		DisableCbUart(TRUE);
-		uartPortIsOpen = TRUE;
-		SetDelaySend();
-		//设定接收框文本刷新时间 人眼24Hz
-		SetTimer(FLASH_RX_EDITBOX_TIMER_ID, rxFlashPeriod, NULL);
-	}
-	else if (uartPortIsOpen == TRUE)
-	{
-		//先置位标志位避免关闭时候接收错误
-		uartPortIsOpen = FALSE;
-		KillTimer(AUTO_SEND_TIMER_ID);//自动发送关闭定时器
-		KillTimer(FLASH_RX_EDITBOX_TIMER_ID);//关闭接收显示定时器
-
-		//结束接收线程
-		//mUart.CloseWaitThread();
-		TerminateThread(hRxThread, 0);
-
-		SetDlgItemText(IDC_BtnOpen, _T("打开串口"));
-		ChangeBmpPic(IDC_PicUartStatus, IDB_SwOff);
-		DisableCbUart(FALSE);
-		//关闭串口
-		if (mUart.isConnected())
-			mUart.ClosePort();
-	}
-}
-
-void CUcomDlg::OnBtnOpen()
-{
-	OpenUart();
-}
-//点击图片打开关闭串口
-void CUcomDlg::OnClickedPicuartstatus()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	OpenUart();
-}
-
-
-void CUcomDlg::InitCbBuart(void)
-{
-	CComboBox *pComBox;
-
-	pComBox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	pComBox->ResetContent();
-	//获取串口列表
-	mUart.GetComList(pComBox);
-	//默认选择第一个
-	pComBox->SetCurSel(0);
-
-	//添加波特率
-	pComBox = (CComboBox*)GetDlgItem(IDC_CbUartBaudrate);
-	TCHAR BaudrateTable[][7] = { "460800", "230400", "194000", "115200", "57600", "56000", "38400"
-		, "19200", "14400", "9600", "4800", "2400", "1200" };
-	for (int i = 0; i < (sizeof(BaudrateTable) / sizeof(BaudrateTable[0])); i++)
-		pComBox->InsertString(0, BaudrateTable[i]);
-
-	//选择115200为默认
-	pComBox->SetCurSel(pComBox->FindString(-1, "115200"));
-
-	//数据位
-	pComBox = (CComboBox*)GetDlgItem(IDC_CbUartDatabit);
-	pComBox->InsertString(0, "8");
-	pComBox->InsertString(0, "7");
-	pComBox->InsertString(0, "6");
-	pComBox->InsertString(0, "5");
-
-	pComBox->SetCurSel(3);//选择8位为默认
-
-	//停止位
-	pComBox = (CComboBox*)GetDlgItem(IDC_CbUartStopbit);
-	pComBox->InsertString(0, "2");
-	pComBox->InsertString(0, "1.5");
-	pComBox->InsertString(0, "1");
-
-	pComBox->SetCurSel(0);//选择115200位为默认
-
-	pComBox = (CComboBox*)GetDlgItem(IDC_CbUartECC);
-	pComBox->InsertString(0, "even");
-	pComBox->InsertString(0, "odd ");
-	pComBox->InsertString(0, "none");
-	//选择无校验为默认
-	pComBox->SetCurSel(0);
-	TRACE("Add ok");
-}
-
 //初始化注册表数据
 bool CUcomDlg::InitRegData(void)
 {
-	CString tmp = AfxGetApp()->GetProfileString("Config", "BDSE", "NULL");
-	if (tmp == "NULL")
-		return false;
-	else
 		return true;
 }
+
 //写入注册表数据
 void CUcomDlg::WriteRegData(void)
 {
-	CComboBox *pCombox;
-	CString strtmp;
-	pCombox = (CComboBox *)GetDlgItem(IDC_CbUartPort);
-	//串口号
-	pCombox->GetLBText(pCombox->GetCurSel(), strtmp);
-	AfxGetApp()->WriteProfileString("Config", "ComName", strtmp);
-
-	strtmp.Empty();
-	strtmp.Format("%d-%d-%d-%d",
-		((CComboBox*)GetDlgItem(IDC_CbUartBaudrate))->GetCurSel()
-		, ((CComboBox*)GetDlgItem(IDC_CbUartDatabit))->GetCurSel()
-		, ((CComboBox*)GetDlgItem(IDC_CbUartStopbit))->GetCurSel()
-		, ((CComboBox*)GetDlgItem(IDC_CbUartECC))->GetCurSel());
-	//配置数据
-	AfxGetApp()->WriteProfileString("Config", "BDSE", strtmp);
-
 	CHARFORMAT cf;
 	CRichEditCtrl *pRich = ((CRichEditCtrl *)GetDlgItem(IDC_RichRx));
 	pRich->GetSelectionCharFormat(cf);
@@ -412,27 +199,19 @@ void CUcomDlg::WriteRegData(void)
 	//没有获取背景色的方法只能用变量记录
 	AfxGetApp()->WriteProfileInt("Config", "GroundColor", backgroudColor);
 
-	TRACE("Write Reg Finish %d\n", backgroudColor);
-}
-
-void CUcomDlg::GetRegData(CString &comName, CString &dcbConfig)
-{
-	comName = AfxGetApp()->GetProfileString("Config", "ComName", "NULL");
-	dcbConfig = AfxGetApp()->GetProfileString("Config", "BDSE", "NULL");
-	TRACE(comName + dcbConfig);
+	TRACE("Color Reg Finish %d\n", backgroudColor);
 }
 
 void CUcomDlg::LoadRegConfig()
 {
-	CString comName, dcbConfig;
-	CComboBox *pComBox = (CComboBox*)GetDlgItem(IDC_CbUartPort);
 	CRichEditCtrl *pRich = (CRichEditCtrl*)GetDlgItem(IDC_RichRx);
+	UINT tmp = AfxGetApp()->GetProfileInt("Config", "TextColor", 0xFF000000);
 	CHARFORMAT cf = { 0 };
 	cf.cbSize = sizeof(cf);;
 	cf.dwMask = CFM_COLOR;
 	cf.dwEffects = 0;
 
-	if (InitRegData() == false)
+	if (tmp == 0xFF000000)
 	{
 		//初次运行默认设置
 		backgroudColor = RGB(242, 241, 215);
@@ -445,20 +224,6 @@ void CUcomDlg::LoadRegConfig()
 	}
 	else
 	{
-		GetRegData(comName, dcbConfig);
-		int sel = pComBox->FindString(-1, comName);
-		//没有该串口，或者不是串口号使用默认（初始化值）
-		if (sel != CB_ERR && comName[0] == 'C')
-			pComBox->SetCurSel(sel);
-
-		int baudSel = 0, dataSel = 0, stopSel = 0, eccSel = 0;
-
-		sscanf_s(dcbConfig, "%d-%d-%d-%d", &baudSel, &dataSel, &stopSel, &eccSel);
-		((CComboBox*)GetDlgItem(IDC_CbUartBaudrate))->SetCurSel(baudSel);
-		((CComboBox*)GetDlgItem(IDC_CbUartDatabit))->SetCurSel(dataSel);
-		((CComboBox*)GetDlgItem(IDC_CbUartStopbit))->SetCurSel(stopSel);
-		((CComboBox*)GetDlgItem(IDC_CbUartECC))->SetCurSel(eccSel);
-
 		//颜色设置
 		cf.crTextColor = AfxGetApp()->GetProfileInt("Config", "TextColor", RGB(0, 0, 0));
 		pRich->SetDefaultCharFormat(cf);
@@ -467,63 +232,16 @@ void CUcomDlg::LoadRegConfig()
 	}
 }
 
-//串口设置是否可操作
-void CUcomDlg::DisableCbUart(bool choose)
-{
-	choose = !choose;
-	GetDlgItem(IDC_CbUartBaudrate)->EnableWindow(choose);
-	GetDlgItem(IDC_CbUartDatabit)->EnableWindow(choose);
-	GetDlgItem(IDC_CbUartStopbit)->EnableWindow(choose);
-	GetDlgItem(IDC_CbUartECC)->EnableWindow(choose);
-	GetDlgItem(IDC_CbUartPort)->EnableWindow(choose);
-}
-
-void CUcomDlg::InitTabEx(void)
-{
-	CRect rect;
-	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABEx);
-	pTab->InsertItem(0, "接收图表");
-	pTab->InsertItem(1, "编码查询");
-	pTab->InsertItem(2, "接收监视");
-	pTab->InsertItem(3, "发送助手");
-
-	//186*243
-	GraphDlg.Create(IDD_GRAPH, pTab);
-	pTab->GetClientRect(&rect);
-	rect.top += 27;
-	GraphDlg.MoveWindow(&rect);
-	GraphDlg.ShowWindow(true);
-
-	EncoderDlg.Create(IDD_ENCODER, pTab);
-	pTab->GetClientRect(&rect);
-	rect.top += 27;
-	EncoderDlg.MoveWindow(&rect);
-	EncoderDlg.ShowWindow(false);
-
-	DataWatchDlg.Create(IDD_WATCH, pTab);
-	pTab->GetClientRect(&rect);
-	rect.top += 27;
-	DataWatchDlg.MoveWindow(&rect);
-	DataWatchDlg.ShowWindow(false);
-
-	MultiSendDlg.Create(IDD_XSEND, pTab);
-	pTab->GetClientRect(&rect);
-	rect.top += 27;
-	MultiSendDlg.MoveWindow(&rect);
-	MultiSendDlg.ShowWindow(false);
-}
-
-
 void CUcomDlg::SendEditBoxData(void)
 {
 	CString tmpStr("\r\n");
 	//换行
 	if (isNewLineSend == TRUE) {
-		mUart.UnblockSend(DataTx.GetCStrData() + tmpStr);
+		xAsyncSend(DataTx.GetCStrData() + tmpStr);
 		txCnt = txCnt+1+ DataTx.GetLength();
 	}
 	else {
-		mUart.UnblockSend(DataTx.GetCStrData());
+		xAsyncSend(DataTx.GetCStrData());
 		txCnt += DataTx.GetLength();
 	}
 	
@@ -587,7 +305,7 @@ void CUcomDlg::ReflashRecvEdit(void)
 	}
 }
 
-
+#include <afxsock.h>
 void CUcomDlg::OnLaunch()
 {
 	//	AfxMessageBox(_T("Hello World!"));
@@ -609,7 +327,20 @@ void CUcomDlg::OnLaunch()
 
 	//dc.Rectangle(0, 0, 100, 100);
 
-	AfxMessageBox("电子学会欢迎您");
+
+	// SOCK_DGRAM->UDP, SOCK_STREAM->TCP
+	
+	// 一定要初始化
+	AfxSocketInit();
+	CAsyncSocket socketClient;
+	socketClient.Create();
+	int nPort = 8888;
+	LPCTSTR sIp = "10.210.83.162";
+	CString strText = "123\n";
+
+	if (socketClient.Connect(sIp, nPort))
+		AfxMessageBox("电子学会欢迎您");
+	socketClient.Send(strText, strText.GetLength());
 }
 
 void CUcomDlg::OnTimer(UINT nIDEvent)
@@ -713,7 +444,7 @@ void CUcomDlg::OnChangeEditTxData()
 		DataTx.ReString(strtmp);
 
 		//若是CMD模式回车发送(数据包含回车)，并将发送的内容添以特殊格式加到接收框的新行中
-		if (isCmdMode && uartPortIsOpen && (strtmp.Find('\n') != -1)) {
+		if (isCmdMode && xIsOpen() && (strtmp.Find('\n') != -1)) {
 			CRichEditCtrl *pRich = (CRichEditCtrl*)GetDlgItem(IDC_RichRx);
 			//文字格式结构
 			CHARFORMAT2 cf;
@@ -731,7 +462,8 @@ void CUcomDlg::OnChangeEditTxData()
 				cmdNextPointer = 0;
 
 			strtmp.Append("\r\n");
-			mUart.UnblockSend(strtmp);
+			xAsyncSend(strtmp);
+			
 			txCnt += strtmp.GetLength();
 
 			cf.dwEffects &= ~CFE_AUTOCOLOR;
@@ -761,27 +493,90 @@ void CUcomDlg::OnChangeEditTxData()
 	}
 }
 
-//接收消息处理
-afx_msg LRESULT CUcomDlg::OnRxMsgProc(WPARAM wParam, LPARAM lParam)
+// 全局消息
+afx_msg LRESULT CUcomDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 {
 	CString strtmp;
-	if (uartPortIsOpen == true)
+	static CString lastClient;
+	cout << hex <<"On Main Msg:" << wParam << ',' << lParam << dec << endl;
+	if ((wParam&WL_MASK) == WL_UCOM_RECV  && xIsOpen() == true)
 	{
-		mUart.UnblockRead(strtmp);
+		if ((wParam&WH_MASK) == WH_UCOM_SUBNET) {
+			nSocketPara *sParam = (nSocketPara *)lParam;
+			((nSocket *)sParam->hSocket)->UnblockRead(strtmp);
+			if (sParam->strIP != lastClient) {
+				CString strNew = "\n【from: " + sParam->strIP + "】\n";
+				DataRx.AppendString(strNew);
+			}
+			lastClient = sParam->strIP;
+		}
+		else
+		{
+			xAsyncRead(strtmp);
+		}
+		cout << "read:" << strtmp << endl;
+		DataWatchDlg.AddItem(strtmp);
+		// 加入显示窗口刷新区域
 		rxCnt += strtmp.GetAllocLength();
 		DataRx.AppendString(strtmp, isDispHex);
-
-		DataWatchDlg.AddItem(strtmp);
 		GraphDlg.AddDataString(strtmp);
 	}
+	else if ((wParam&WL_MASK) == WL_UCOM_OPEN)
+	{ 
+		if (!IsOpenX()) {
+			SetDelaySend();
+			//设定接收框文本刷新时间 人眼24Hz
+			SetTimer(FLASH_RX_EDITBOX_TIMER_ID, rxFlashPeriod, NULL);
+		}
+	}
+	else if ((wParam&WL_MASK) == WL_UCOM_CLOSE)
+	{
+		if (IsOpenX()) {
+			KillTimer(AUTO_SEND_TIMER_ID);//自动发送关闭定时器
+			KillTimer(FLASH_RX_EDITBOX_TIMER_ID);//关闭接收显示定时器
+		}
+	}
+	//else if (wParam == W_SUBNET_RECV)
+	//{
 
+	//	//xAsyncRead(strtmp);
+	//	cout << "read:" << strtmp << endl;
+	//	rxCnt += strtmp.GetAllocLength();
+	//	DataRx.AppendString(strNew, isDispHex);
+
+	//	DataWatchDlg.AddItem(strtmp);
+	//	GraphDlg.AddDataString(strtmp);
+	//}
 	return 0;
 }
+
+/* 接收消息处理
+ * 通过发送消息来激活
+*/
+//
+//afx_msg LRESULT CUcomDlg::OnRxMsgProc(WPARAM wParam, LPARAM lParam)
+//{
+//	CString strtmp;
+//
+//	if (xIsOpen() == true)
+//	{
+//		xAsyncSend(strtmp);
+//		rxCnt += strtmp.GetAllocLength();
+//		DataRx.AppendString(strtmp, isDispHex);
+//
+//		DataWatchDlg.AddItem(strtmp);
+//		GraphDlg.AddDataString(strtmp);
+//	}
+//
+//	return 0;
+//}
 
 
 void CUcomDlg::OnClose()
 {
 	WriteRegData();
+	UartDlg.WriteRegData();
+	NetDlg.WriteRegData();
 	CDialog::OnClose();
 }
 
@@ -850,6 +645,96 @@ void CUcomDlg::OnBnClickedBtnsaverx()
 	}
 }
 
+void CUcomDlg::InitTabEx(void)
+{
+	CRect rect;
+	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABEx);
+	pTab->InsertItem(0, "接收图表");
+	pTab->InsertItem(1, "编码查询");
+	pTab->InsertItem(2, "接收监视");
+	pTab->InsertItem(3, "发送助手");
+
+	//186*243
+	GraphDlg.Create(IDD_GRAPH, pTab);
+	pTab->GetClientRect(&rect);
+	rect.top += 27;
+	GraphDlg.MoveWindow(&rect);
+	GraphDlg.ShowWindow(true);
+
+	EncoderDlg.Create(IDD_ENCODER, pTab);
+	pTab->GetClientRect(&rect);
+	rect.top += 27;
+	EncoderDlg.MoveWindow(&rect);
+	EncoderDlg.ShowWindow(false);
+
+	DataWatchDlg.Create(IDD_WATCH, pTab);
+	pTab->GetClientRect(&rect);
+	rect.top += 27;
+	DataWatchDlg.MoveWindow(&rect);
+	DataWatchDlg.ShowWindow(false);
+
+	MultiSendDlg.Create(IDD_XSEND, pTab);
+	pTab->GetClientRect(&rect);
+	rect.top += 27;
+	MultiSendDlg.MoveWindow(&rect);
+	MultiSendDlg.ShowWindow(false);
+}
+
+void CUcomDlg::InitTabSrc(void)
+{
+	CRect rect;
+	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABSrc);
+	pTab->InsertItem(0, "串口");
+	pTab->InsertItem(1, "网络");
+	//pTab->GetWindowRect(&rect);
+	//ScreenToClient(&rect);
+	pTab->GetClientRect(&rect);
+	//cout << rect.top << ',' << rect.left << endl;
+	rect.top += 28;
+	rect.left += 2;
+	UartDlg.Create(IDD_UART, pTab);
+	UartDlg.MoveWindow(&rect);
+	UartDlg.ShowWindow(true);
+
+	pTab->GetClientRect(&rect);
+	rect.top += 28;
+	rect.left += 2;
+	NetDlg.Create(IDD_NET, pTab);
+	NetDlg.MoveWindow(&rect);
+	NetDlg.ShowWindow(false);
+
+	SwitchCurDataSrc(WH_UCOM_UART);
+}
+
+typedef  bool (UcomBase::*IsOpenY)(void);
+void CUcomDlg::SwitchCurDataSrc(int dataSrc)
+{
+	IsOpenY openy = &UcomBase::isOpen;
+	(NetDlg.*openy)();
+	switch (dataSrc)
+	{
+	case WH_UCOM_UART:
+		curDataSrc = WH_UCOM_UART;
+		xIsOpen = UartDlg.isOpen;
+		xAsyncSend = UartDlg.AsyncSend;
+		xAsyncRead = UartDlg.AsyncRead;
+		break;
+	case WH_UCOM_NET:
+		curDataSrc = WH_UCOM_UART;
+		//xIsOpen = NetDlg.isOpen;
+		//xAsyncSend = NetDlg.AsyncSend;
+		//xAsyncRead = NetDlg.AsyncRead;
+		//xAsyncRead = &CNetDlg::VirtualSend;
+		
+		//xIsOpen = NetDlg.isOpen;
+		//xAsyncSend = NetDlg.AsyncSend;
+		//xAsyncRead = NetDlg.AsyncRead;
+	default:
+		break;
+	}
+}
+
+
 //切换选项卡
 void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -889,6 +774,31 @@ void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
+// 数据源tab切换
+void CUcomDlg::OnSelchangeTabsrc(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABSrc);
+	int sel = pTab->GetCurSel();
+	*pResult = 0;
+
+	switch (sel)
+	{
+	case 0:
+		UartDlg.ShowWindow(true);
+		NetDlg.ShowWindow(false);
+		SwitchCurDataSrc(WH_UCOM_UART);
+		break;
+	case 1:
+		UartDlg.ShowWindow(false);
+		NetDlg.ShowWindow(true);
+		SwitchCurDataSrc(WH_UCOM_NET);
+		break;
+	default:
+		break;
+	}
+}
+
 
 void CUcomDlg::OnBnClickedBtnencoder()
 {
@@ -921,9 +831,9 @@ void CUcomDlg::OnOK()
 
 void CUcomDlg::OnBnClickedBtnsendfile()
 {
-	if (!uartPortIsOpen)
+	if (!xIsOpen())
 		return;
-	CSendFile SendFileDlg(this, mUart.GetHandleAddr());
+	CSendFile SendFileDlg(this, &xAsyncSend);
 	SendFileDlg.DoModal();
 }
 
@@ -936,29 +846,36 @@ BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_KEYDOWN 
 		&& GetDlgItem(IDC_EditTxData) == GetFocus())
 	{
+		// AT模式的高级功能
 		if (isCmdMode) {
-
-		//上下切换历史命令
-		switch (pMsg->wParam)
-		{
-			case VK_UP:
-				SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
-				if (--cmdDispPointer == -1)
-					cmdDispPointer = MAX_CMD_HISTORY - 1;
-				len = pEdit->GetWindowTextLengthA();
-				pEdit->SetSel(len, len);
-				pEdit->SetFocus();
-				break;
-			case VK_DOWN:
-				SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
-				if (++cmdDispPointer == MAX_CMD_HISTORY)
-					cmdDispPointer = 0;
-				len = pEdit->GetWindowTextLengthA();
-				pEdit->SetSel(len, len);
-				pEdit->SetFocus();
-				break;
-			default:break;
-			}
+			//上下切换历史命令
+			switch (pMsg->wParam)
+			{
+				case VK_UP:
+					SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+					if (--cmdDispPointer == -1)
+						cmdDispPointer = MAX_CMD_HISTORY - 1;
+					len = pEdit->GetWindowTextLengthA();
+					pEdit->SetSel(len, len);
+					pEdit->SetFocus();
+					break;
+				case VK_DOWN:
+					SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
+					if (++cmdDispPointer == MAX_CMD_HISTORY)
+						cmdDispPointer = 0;
+					len = pEdit->GetWindowTextLengthA();
+					pEdit->SetSel(len, len);
+					pEdit->SetFocus();
+					break;
+				case VK_TAB:
+					pEdit->SetSel(0, 0);
+					pEdit->ReplaceSel("AT+");
+					len = pEdit->GetWindowTextLengthA();
+					pEdit->SetSel(len, len);
+					pEdit->SetFocus();
+					return true;
+				default:break;
+				}
 		}
 	}
 

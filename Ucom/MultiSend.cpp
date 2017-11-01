@@ -11,11 +11,11 @@
 
 IMPLEMENT_DYNAMIC(CMultiSend, CDialog)
 
-CMultiSend::CMultiSend(CWnd* pParent, bool *pUartOpenStatus, HANDLE *hUART)
+CMultiSend::CMultiSend(CWnd* pParent, AsyncSendX* send, IsOpenX* isOpen)
 : CDialog(CMultiSend::IDD, pParent), isHotKey(false)
 {
-	pIsUartOpen = pUartOpenStatus;
-	hUartCom = hUART;
+	ucomAsyncSend = (AsyncSendX *)send;
+	ucomIsOpen = (IsOpenX *)isOpen;
 }
 
 CMultiSend::~CMultiSend()
@@ -46,10 +46,6 @@ BOOL CMultiSend::OnInitDialog()
 	CDialog::OnInitDialog();
 	CComboBox *pCombox;
 
-	//设置非堵塞参数
-	memset(&m_osWrite, 0, sizeof(OVERLAPPED));
-	m_osWrite.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
 	SetDlgItemInt(IDC_EdbTimeXSend, 1000);
 
 	//设定串口参数
@@ -73,7 +69,7 @@ void CMultiSend::LoppSendSet(void)
 	{
 		int time = GetDlgItemInt(IDC_EdbTimeXSend);
 		//不能选择
-		if (time <= 0 || *pIsUartOpen == FALSE)
+		if (time <= 0 || (*ucomIsOpen)() == FALSE)
 		{
 			((CButton *)GetDlgItem(IDC_CkbTimeXSend))->SetCheck(BST_UNCHECKED);
 				return;
@@ -101,34 +97,10 @@ void CMultiSend::OnBnClickedCkbtimexsend()
 
 int CMultiSend::UnblockSend(const CString &dataStr)
 {
-	BOOL bWriteStatus;
-	COMSTAT ComStat;
-	DWORD dwErrorFlags, dwLength;
-	if (*pIsUartOpen == FALSE)
+	if ((*ucomIsOpen)() == FALSE)
 		return -1;
 
-	ClearCommError(*hUartCom, &dwErrorFlags, &ComStat);
-	if (dwErrorFlags>0)
-	{
-		TRACE("Unblock Write Failed\n");
-		PurgeComm(*hUartCom, PURGE_TXABORT | PURGE_TXCLEAR);
-		return 0;
-	}
-	m_osWrite.Offset = 0;
-	dwLength = dataStr.GetAllocLength();
-	bWriteStatus = WriteFile(*hUartCom, dataStr, dwLength, &dwLength, &m_osWrite);
-
-	if (!bWriteStatus)
-	{
-		if (GetLastError() == ERROR_IO_PENDING)
-		{
-			//如果重叠操作未完成,等待直到操作完成
-			GetOverlappedResult(*hUartCom, &m_osWrite, &dwLength, TRUE);
-		}
-		else
-			dwLength = 0;
-	}
-	return dwLength;
+	return (*ucomAsyncSend)(dataStr);
 }
 
 void CMultiSend::OnTimeSend(bool clearcnt)

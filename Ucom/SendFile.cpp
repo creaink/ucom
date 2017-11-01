@@ -11,10 +11,10 @@
 
 IMPLEMENT_DYNAMIC(CSendFile, CDialog)
 
-CSendFile::CSendFile(CWnd* pParent, HANDLE *hUART)
-: CDialog(CSendFile::IDD, pParent)
+CSendFile::CSendFile(CWnd* pParent, AsyncSendX* send)
+	: CDialog(CSendFile::IDD, pParent)
 {
-	hUartCom = hUART;
+	ucomAsyncSend = send;
 }
 
 CSendFile::~CSendFile()
@@ -31,8 +31,6 @@ BOOL CSendFile::OnInitDialog()
 	CDialog::OnInitDialog();
 	SetWindowText(_T("文件发送"));
 	strFilePath = "";
-	memset(&m_osWrite, 0, sizeof(OVERLAPPED));
-	m_osWrite.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	CProgressCtrl* pProgress = (CProgressCtrl*)GetDlgItem(IDC_PrgSend);
 	pProgress->SetStep(1);
@@ -146,32 +144,8 @@ void CSendFile::OnBnClickedBtnsendfile()
 
 int CSendFile::UnblockSend(const char*pBuff, UINT len)
 {
-	BOOL bWriteStatus;
-	COMSTAT ComStat;
-	DWORD dwErrorFlags, dwLength;
-
-	ClearCommError(*hUartCom, &dwErrorFlags, &ComStat);
-	if (dwErrorFlags>0)
-	{
-		TRACE("Unblock Write Failed\n");
-		PurgeComm(*hUartCom, PURGE_TXABORT | PURGE_TXCLEAR);
-		return 0;
-	}
-	m_osWrite.Offset = 0;
-
-	bWriteStatus = WriteFile(*hUartCom, pBuff, len, &dwLength, &m_osWrite);
-
-	if (!bWriteStatus)
-	{
-		if (GetLastError() == ERROR_IO_PENDING)
-		{
-			//如果重叠操作未完成,等待直到操作完成
-			GetOverlappedResult(*hUartCom, &m_osWrite, &dwLength, TRUE);
-		}
-		else
-			dwLength = 0;
-	}
-	return dwLength;
+	CString str(pBuff, len);
+	return (*ucomAsyncSend)(str);
 }
 
 
