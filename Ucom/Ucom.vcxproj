@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -10,23 +10,130 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\core\DeConsole.h" />
+    <ClInclude Include="src\core\iSocket.h" />
+    <ClInclude Include="src\core\iUart.h" />
+    <ClInclude Include="src\core\Text.h" />
+    <ClInclude Include="src\core\UBase.h" />
+    <ClInclude Include="src\dialog\DataWatch.h" />
+    <ClInclude Include="src\dialog\Encoder.h" />
+    <ClInclude Include="src\dialog\GraphDlg.h" />
+    <ClInclude Include="src\dialog\GraphFull.h" />
+    <ClInclude Include="src\dialog\MultiSend.h" />
+    <ClInclude Include="src\dialog\NetDlg.h" />
+    <ClInclude Include="src\dialog\SendFile.h" />
+    <ClInclude Include="src\dialog\Splitter.h" />
+    <ClInclude Include="src\dialog\UartDlg.h" />
+    <ClInclude Include="src\dialog\Ucom.h" />
+    <ClInclude Include="src\dialog\UcomDlg.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartAxis.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartAxisLabel.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartBalloonLabel.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartBarSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartCandlestickSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartCrossHairCursor.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartCtrl.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartCursor.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartDateTimeAxis.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartDragLineCursor.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartFont.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartGanttSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartGradient.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartGrid.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartLabel.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartLegend.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartLineSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartLogarithmicAxis.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartMouseListener.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartPointsArray.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartPointsSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartScrollBar.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartSerieBase.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartSeriesMouseListener.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartStandardAxis.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartString.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartSurfaceSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartTitle.h" />
+    <ClInclude Include="src\lib\ChartCtrl\ChartXYSerie.h" />
+    <ClInclude Include="src\lib\ChartCtrl\PointsOrdering.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\iSocket.cpp" />
+    <ClCompile Include="src\core\iUart.cpp" />
+    <ClCompile Include="src\core\Text.cpp" />
+    <ClCompile Include="src\dialog\DataWatch.cpp" />
+    <ClCompile Include="src\dialog\Encoder.cpp" />
+    <ClCompile Include="src\dialog\GraphDlg.cpp" />
+    <ClCompile Include="src\dialog\GraphFull.cpp" />
+    <ClCompile Include="src\dialog\MultiSend.cpp" />
+    <ClCompile Include="src\dialog\NetDlg.cpp" />
+    <ClCompile Include="src\dialog\SendFile.cpp" />
+    <ClCompile Include="src\dialog\Splitter.cpp" />
+    <ClCompile Include="src\dialog\UartDlg.cpp" />
+    <ClCompile Include="src\dialog\Ucom.cpp" />
+    <ClCompile Include="src\dialog\UcomDlg.cpp" />
+    <ClCompile Include="src\dialog\UcomDlgBase.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartAxis.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartAxisLabel.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartBarSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartCandlestickSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartCrossHairCursor.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartCtrl.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartCursor.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartDateTimeAxis.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartDragLineCursor.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartFont.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartGanttSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartGradient.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartGrid.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartLegend.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartLineSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartLogarithmicAxis.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartPointsSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartScrollBar.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartStandardAxis.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartSurfaceSerie.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartTitle.cpp" />
+    <ClCompile Include="src\lib\ChartCtrl\ChartXYSerie.cpp" />
+    <ClCompile Include="src\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Icon.ico" />
+    <Image Include="res\off.bmp" />
+    <Image Include="res\On.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Ucom.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ucom.rc" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2F3CABBB-B51B-43EB-A7DE-BEB235410806}</ProjectGuid>
     <RootNamespace>Ucom</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
@@ -46,6 +153,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Output\Bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Output\Obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,7 +190,7 @@
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\core;$(ProjectDir)src\lib\ChartCtrl;$(ProjectDir)src\dialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
@@ -103,118 +212,6 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ChartCtrl\ChartAxis.h" />
-    <ClInclude Include="ChartCtrl\ChartAxisLabel.h" />
-    <ClInclude Include="ChartCtrl\ChartBalloonLabel.h" />
-    <ClInclude Include="ChartCtrl\ChartBarSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartCandlestickSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartCrossHairCursor.h" />
-    <ClInclude Include="ChartCtrl\ChartCtrl.h" />
-    <ClInclude Include="ChartCtrl\ChartCursor.h" />
-    <ClInclude Include="ChartCtrl\ChartDateTimeAxis.h" />
-    <ClInclude Include="ChartCtrl\ChartDragLineCursor.h" />
-    <ClInclude Include="ChartCtrl\ChartFont.h" />
-    <ClInclude Include="ChartCtrl\ChartGanttSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartGradient.h" />
-    <ClInclude Include="ChartCtrl\ChartGrid.h" />
-    <ClInclude Include="ChartCtrl\ChartLabel.h" />
-    <ClInclude Include="ChartCtrl\ChartLegend.h" />
-    <ClInclude Include="ChartCtrl\ChartLineSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartLogarithmicAxis.h" />
-    <ClInclude Include="ChartCtrl\ChartMouseListener.h" />
-    <ClInclude Include="ChartCtrl\ChartPointsArray.h" />
-    <ClInclude Include="ChartCtrl\ChartPointsSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartScrollBar.h" />
-    <ClInclude Include="ChartCtrl\ChartSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartSerieBase.h" />
-    <ClInclude Include="ChartCtrl\ChartSeriesMouseListener.h" />
-    <ClInclude Include="ChartCtrl\ChartStandardAxis.h" />
-    <ClInclude Include="ChartCtrl\ChartString.h" />
-    <ClInclude Include="ChartCtrl\ChartSurfaceSerie.h" />
-    <ClInclude Include="ChartCtrl\ChartTitle.h" />
-    <ClInclude Include="ChartCtrl\ChartXYSerie.h" />
-    <ClInclude Include="ChartCtrl\PointsOrdering.h" />
-    <ClInclude Include="DataWatch.h" />
-    <ClInclude Include="DeConsole.h" />
-    <ClInclude Include="Encoder.h" />
-    <ClInclude Include="GraphDlg.h" />
-    <ClInclude Include="GraphFull.h" />
-    <ClInclude Include="iSocket.h" />
-    <ClInclude Include="iUart.h" />
-    <ClInclude Include="MultiSend.h" />
-    <ClInclude Include="NetDlg.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="SendFile.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="UartDlg.h" />
-    <ClInclude Include="UBase.h" />
-    <ClInclude Include="Ucom.h" />
-    <ClInclude Include="UcomDlg.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ChartCtrl\ChartAxis.cpp" />
-    <ClCompile Include="ChartCtrl\ChartAxisLabel.cpp" />
-    <ClCompile Include="ChartCtrl\ChartBarSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartCandlestickSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartCrossHairCursor.cpp" />
-    <ClCompile Include="ChartCtrl\ChartCtrl.cpp" />
-    <ClCompile Include="ChartCtrl\ChartCursor.cpp" />
-    <ClCompile Include="ChartCtrl\ChartDateTimeAxis.cpp" />
-    <ClCompile Include="ChartCtrl\ChartDragLineCursor.cpp" />
-    <ClCompile Include="ChartCtrl\ChartFont.cpp" />
-    <ClCompile Include="ChartCtrl\ChartGanttSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartGradient.cpp" />
-    <ClCompile Include="ChartCtrl\ChartGrid.cpp" />
-    <ClCompile Include="ChartCtrl\ChartLegend.cpp" />
-    <ClCompile Include="ChartCtrl\ChartLineSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartLogarithmicAxis.cpp" />
-    <ClCompile Include="ChartCtrl\ChartPointsSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartScrollBar.cpp" />
-    <ClCompile Include="ChartCtrl\ChartSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartStandardAxis.cpp" />
-    <ClCompile Include="ChartCtrl\ChartSurfaceSerie.cpp" />
-    <ClCompile Include="ChartCtrl\ChartTitle.cpp" />
-    <ClCompile Include="ChartCtrl\ChartXYSerie.cpp" />
-    <ClCompile Include="DataWatch.cpp" />
-    <ClCompile Include="Encoder.cpp" />
-    <ClCompile Include="GraphDlg.cpp" />
-    <ClCompile Include="GraphFull.cpp" />
-    <ClCompile Include="iSocket.cpp" />
-    <ClCompile Include="iUart.cpp" />
-    <ClCompile Include="MultiSend.cpp" />
-    <ClCompile Include="NetDlg.cpp" />
-    <ClCompile Include="SendFile.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Text.cpp" />
-    <ClCompile Include="UartDlg.cpp" />
-    <ClCompile Include="Ucom.cpp" />
-    <ClCompile Include="UcomDlg.cpp" />
-    <ClCompile Include="UcomDlgBase.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Ucom.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ChartCtrl\ChartBalloonLabel.inl" />
-    <None Include="ChartCtrl\ChartLabel.inl" />
-    <None Include="ChartCtrl\ChartPointsArray.inl" />
-    <None Include="ChartCtrl\ChartSerieBase.inl" />
-    <None Include="resource.hm" />
-    <None Include="res\Ucom.rc2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Icon.ico" />
-    <Image Include="res\off.bmp" />
-    <Image Include="res\On.bmp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,321 +1,330 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{b05c26d9-9108-4534-9774-5afd9bec50ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="Core">
+      <UniqueIdentifier>{e5e19ad4-8f22-4faf-840f-d823503d2439}</UniqueIdentifier>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Dialog\src">
+      <UniqueIdentifier>{d3e03ad3-c16f-4aad-9e36-b00e244da7bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialog\inc">
+      <UniqueIdentifier>{f5e82c32-059a-42ff-99f6-d67aa7542863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\inc">
+      <UniqueIdentifier>{ad050153-a09f-4a13-a90c-8ec29f669e67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\src">
+      <UniqueIdentifier>{dad3dd12-20a5-4fbb-99c8-d93f179e295f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Chart">
-      <UniqueIdentifier>{89e41ef7-a157-4940-9e69-55914d6c271b}</UniqueIdentifier>
+      <UniqueIdentifier>{1ecd68a4-e58a-4499-98eb-4176b12ce66f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chart\inc">
+      <UniqueIdentifier>{38437ead-3807-44b0-8946-8cdc36192d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chart\src">
+      <UniqueIdentifier>{76a9acc2-5647-4b2d-af55-34c5a147d0df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{876df184-4b56-4cd0-819f-70c825f585d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MFC">
+      <UniqueIdentifier>{1ff8d67c-9634-4576-a2af-e48a554666e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="src\dialog\DataWatch.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\Encoder.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\GraphDlg.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\GraphFull.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\MultiSend.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\NetDlg.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\SendFile.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\Splitter.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\UartDlg.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\Ucom.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialog\UcomDlg.h">
+      <Filter>Dialog\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\DeConsole.h">
+      <Filter>Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\iSocket.h">
+      <Filter>Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\iUart.h">
+      <Filter>Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Text.h">
+      <Filter>Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\UBase.h">
+      <Filter>Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartAxis.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartAxisLabel.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartBalloonLabel.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartBarSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartCandlestickSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartCrossHairCursor.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartCtrl.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartCursor.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartDateTimeAxis.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartDragLineCursor.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartFont.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartGanttSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartGradient.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartGrid.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartLabel.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartLegend.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartLineSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartLogarithmicAxis.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartMouseListener.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartPointsArray.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartPointsSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartScrollBar.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartSerieBase.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartSeriesMouseListener.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartStandardAxis.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartString.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartSurfaceSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartTitle.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\ChartXYSerie.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ChartCtrl\PointsOrdering.h">
+      <Filter>Chart\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>MFC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ucom.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UcomDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DeConsole.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iUart.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Encoder.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DataWatch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiSend.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SendFile.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartAxis.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartAxisLabel.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartBalloonLabel.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartBarSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartCandlestickSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartCrossHairCursor.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartCtrl.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartCursor.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartDateTimeAxis.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartDragLineCursor.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartFont.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartGanttSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartGradient.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartGrid.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartLabel.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartLegend.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartLineSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartLogarithmicAxis.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartMouseListener.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartPointsArray.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartPointsSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartScrollBar.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartSerieBase.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartSeriesMouseListener.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartStandardAxis.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartString.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartSurfaceSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartTitle.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\ChartXYSerie.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartCtrl\PointsOrdering.h">
-      <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphFull.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UartDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UBase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="NetDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iSocket.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Ucom.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\DataWatch.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="UcomDlg.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\Encoder.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\GraphDlg.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\GraphFull.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="iUart.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\MultiSend.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="UcomDlgBase.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\NetDlg.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="GraphDlg.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\SendFile.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="Encoder.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\Splitter.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="DataWatch.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\UartDlg.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="MultiSend.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\Ucom.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="SendFile.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\dialog\UcomDlg.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartAxis.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\dialog\UcomDlgBase.cpp">
+      <Filter>Dialog\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartAxisLabel.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\core\iSocket.cpp">
+      <Filter>Core\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartBarSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\core\iUart.cpp">
+      <Filter>Core\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartCandlestickSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\core\Text.cpp">
+      <Filter>Core\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartCrossHairCursor.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartAxis.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartCtrl.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartAxisLabel.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartCursor.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartBarSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartDateTimeAxis.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartCandlestickSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartDragLineCursor.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartCrossHairCursor.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartFont.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartCtrl.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartGanttSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartCursor.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartGradient.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartDateTimeAxis.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartGrid.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartDragLineCursor.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartLegend.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartFont.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartLineSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartGanttSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartLogarithmicAxis.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartGradient.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartPointsSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartGrid.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartScrollBar.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartLegend.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartLineSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartStandardAxis.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartLogarithmicAxis.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartSurfaceSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartPointsSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartTitle.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartScrollBar.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="ChartCtrl\ChartXYSerie.cpp">
-      <Filter>Chart</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="GraphFull.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartStandardAxis.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="UartDlg.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartSurfaceSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="NetDlg.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartTitle.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-    <ClCompile Include="iSocket.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\lib\ChartCtrl\ChartXYSerie.cpp">
+      <Filter>Chart\src</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Ucom.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\Ucom.rc2">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="resource.hm">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="ChartCtrl\ChartBalloonLabel.inl">
-      <Filter>Chart</Filter>
-    </None>
-    <None Include="ChartCtrl\ChartLabel.inl">
-      <Filter>Chart</Filter>
-    </None>
-    <None Include="ChartCtrl\ChartPointsArray.inl">
-      <Filter>Chart</Filter>
-    </None>
-    <None Include="ChartCtrl\ChartSerieBase.inl">
-      <Filter>Chart</Filter>
-    </None>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>MFC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Icon.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\On.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>Resource</Filter>
     </Image>
     <Image Include="res\off.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>Resource</Filter>
     </Image>
+    <Image Include="res\On.bmp">
+      <Filter>Resource</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Ucom.rc2">
+      <Filter>Resource</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ucom.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
