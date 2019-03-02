@@ -62,7 +62,7 @@ BOOL CMultiSend::OnInitDialog()
 
 
 // CMultiSend 消息处理程序
-void CMultiSend::LoppSendSet(void)
+void CMultiSend::LoopSendSet(void)
 {
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbTimeXSend))
 	{
@@ -87,11 +87,11 @@ void CMultiSend::LoppSendSet(void)
 
 void CMultiSend::OnEnChangeEdbtimexsend()
 {
-	LoppSendSet();
+	LoopSendSet();
 }
 void CMultiSend::OnBnClickedCkbtimexsend()
 {
-	LoppSendSet();
+	LoopSendSet();
 }
 
 int CMultiSend::UnblockSend(const CString &dataStr)
@@ -128,7 +128,6 @@ void CMultiSend::OnTimeSend(bool clearcnt)
 
 void CMultiSend::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
 	case LOOP_SEND_ID:
@@ -142,7 +141,6 @@ void CMultiSend::OnTimer(UINT_PTR nIDEvent)
 
 void CMultiSend::OnOK()
 {
-	// TODO:  在此添加专用代码和/或调用基类
 	//CDialog::OnOK();
 	return;
 }

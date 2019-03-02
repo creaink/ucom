@@ -70,7 +70,6 @@ BOOL CGraphFull::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
 	//CMenu* pMenu = this->GetSystemMenu(FALSE);//系统菜单
 	//pMenu->ModifyMenu(SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);//禁用关闭按钮
 
@@ -105,7 +104,5 @@ void CGraphFull::Resize(LONG Bottom, LONG Right)
 
 void CGraphFull::OnCancel()
 {
-	// TODO: 在此添加专用代码和/或调用基类
-
 	CDialog::OnCancel();
 }

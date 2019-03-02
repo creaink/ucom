@@ -349,7 +349,6 @@ void CGraphDlg::OnBnClickedRadAxis()
 	double max, min;
 	CString strTmp;
 
-	// TODO: 在此添加控件通知处理程序代码
 	CButton* btn = (CButton*)GetDlgItem(IDC_RadYAxis);
 	if (btn->GetCheck() == 1)
 		pAxisNow = pLeftAxis;
@@ -467,7 +466,6 @@ void CGraphDlg::OnBnClickedCkblinev()
 void CGraphDlg::OnCustomdrawLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	//LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	//// TODO: 在此添加控件通知处理程序代码
 	//*pResult = 0;
 
 	NMLVCUSTOMDRAW* pNMCD = (NMLVCUSTOMDRAW*)(pNMHDR);
@@ -502,7 +500,6 @@ void CGraphDlg::OnCustomdrawLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 void CGraphDlg::OnClickLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
 
 	CString str; 

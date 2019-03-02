@@ -21,7 +21,7 @@ public:
 
 private:
 	bool isHotKey;
-	void LoppSendSet(void);
+	void LoopSendSet(void);
 
 	TextBank txData;
 	void SendEdbox(int index);

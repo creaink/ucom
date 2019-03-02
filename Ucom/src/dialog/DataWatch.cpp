@@ -158,7 +158,6 @@ void CDataWatch::OnBnClickedBtnclearlist()
 void CDataWatch::OnClickListwatch(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO:  在此添加控件通知处理程序代码
 	*pResult = 0;
 
 	SetDlgItemText(IDC_EdbListItem, pList->GetItemText((int)pList->GetFirstSelectedItemPosition()-1, 2));
@@ -167,9 +166,6 @@ void CDataWatch::OnClickListwatch(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CDataWatch::OnOK()
 {
-	// TODO:  在此添加专用代码和/或调用基类
-
 	//CDialog::OnOK();
 	return;
-
 }

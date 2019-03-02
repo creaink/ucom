@@ -44,12 +44,11 @@ BOOL CEncoder::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
 	CComboBox *pComBox;
 
 	pComBox = (CComboBox *)GetDlgItem(IDC_CbEncDec);
-	pComBox->InsertString(0, "编码查询");
 	pComBox->InsertString(0, "HEX解码");
+	pComBox->InsertString(0, "编码查询");
 	// 选择转HEX为默认
 	pComBox->SetCurSel(0);
 	return TRUE;
@@ -272,7 +271,6 @@ void CEncoder::OnClickedRadio1()
 
 void CEncoder::OnOK()
 {
-	// TODO:  在此添加专用代码和/或调用基类
 	//CDialog::OnOK();
 	return;
 

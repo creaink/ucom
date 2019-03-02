@@ -25,7 +25,6 @@ CUcomApp::CUcomApp()
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 
-	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
@@ -76,12 +75,10 @@ BOOL CUcomApp::InitInstance()
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{
-		// TODO:  在此放置处理何时用
 		//  “确定”来关闭对话框的代码
 	}
 	else if (nResponse == IDCANCEL)
 	{
-		// TODO:  在此放置处理何时用
 		//  “取消”来关闭对话框的代码
 	}
 	else if (nResponse == -1)

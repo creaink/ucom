@@ -92,8 +92,7 @@ BOOL CUcomDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	// TODO:  在此添加额外的初始化代码
-	SetWindowText(_T("Ucom v1.1 轻串口 长春理工大学电子学会"));
+	SetWindowText(_T("Ucom v1.1.0 轻串口"));
 
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
