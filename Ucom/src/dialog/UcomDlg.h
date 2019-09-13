@@ -1,5 +1,5 @@
 
-// UcomDlg.h : 头文件
+// UcomDlg.h
 //
 
 #pragma once
@@ -27,13 +27,13 @@
 //class CUcomDlg : public CDialogEx
 class CUcomDlg : public CDialog
 {
-// 构造
-public:
-	CUcomDlg(CWnd* pParent = NULL);	// 标准构造函数
 
-// 对话框数据
+public:
+	CUcomDlg(CWnd* pParent = NULL);	// Standard constructor
+
+// Dialog data
 	enum { IDD = IDD_UCOM_DIALOG };
-	
+
 public:
 	const int rxFlashPeriod = 40;
 
@@ -71,7 +71,7 @@ private:
 	CString lastInfo;
 	int LargerMode;
 	bool isLarge;
-	//面板是否处于工作状态
+	// 面板是否处于工作状态
 	bool isWorking;
 	void ChangeItemSize(int nID, int x, int y, bool isEnlarge);
 	int MaxWndHeight;
@@ -84,10 +84,10 @@ private:
 	CUartDlg UartDlg;
 	CNetDlg NetDlg;
 
-	UINT widthEx, heightDlgMin, widthDlgMin;	//收缩扩展区的宽度
+	UINT widthEx, heightDlgMin, widthDlgMin;	// ExtPannel width and limit
 	CSplitter hzSplitter;
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 
 // 实现

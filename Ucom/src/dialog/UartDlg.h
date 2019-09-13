@@ -3,16 +3,16 @@
 #include "iUart.h"
 
 
-// CUartDlg 对话框
+// CUartDlg Dialog
 class CUartDlg : public CDialog, public UcomBase
 {
 	DECLARE_DYNAMIC(CUartDlg)
 
 private:
-	HANDLE hRxThread;	// 接收线程句柄
-	HWND hwTopParent;	// 顶层窗口句柄
+	HANDLE hRxThread;	// receive thread HANDLE
+	HWND hwTopParent;	// top dailog HWND
 	bool IsUartPortAvailable(void);
-	//面板是否处于工作状态
+	// panne is working
 	bool isWorking;
 	iUart mUart;
 	void ClearFlowCtrlStats(void);
@@ -30,7 +30,7 @@ public:
 	DCB GetUartConfigDCB(void);
 	void LoadRegConfig();
 	void GetRegData(CString &comName, CString &dcbConfig);
-	// 父窗口关闭时候OnClose需要调用保存一下信息
+	// when parent dialog close should invoke OnClose to save data
 	void WriteRegData(void);
 
 	void SethwTopParent(HWND pTopParent) {
@@ -50,16 +50,16 @@ public:
 		return isWorking;
 	}
 public:
-	CUartDlg(CWnd* pParent = NULL);   // 标准构造函数
+	CUartDlg(CWnd* pParent = NULL);   // Standard constructor
 	virtual ~CUartDlg();
 
-// 对话框数据
+// Dialog data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_UART };
 #endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

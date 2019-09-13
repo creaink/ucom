@@ -47,7 +47,7 @@ BOOL CMultiSend::OnInitDialog()
 
 	SetDlgItemInt(IDC_EdbTimeXSend, 1000);
 
-	//设定串口参数
+	// 设定串口参数
 	pCombox = (CComboBox*)GetDlgItem(IDC_CbTransNum);
 	char str[2] = "0";
 	for (int i = 0; i < 10; i++)
@@ -67,7 +67,7 @@ void CMultiSend::LoopSendSet(void)
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbTimeXSend))
 	{
 		int time = GetDlgItemInt(IDC_EdbTimeXSend);
-		//不能选择
+		// 不能选择
 		if (time <= 0 || (*uuBase)->IsRWable() == false)
 		{
 			((CButton *)GetDlgItem(IDC_CkbTimeXSend))->SetCheck(BST_UNCHECKED);
@@ -187,7 +187,7 @@ void CMultiSend::OnBnClickedBtntrans()
 {
 	CString strTmp;
 
-	GetDlgItemText(IDC_EdbXDetail,strTmp); 
+	GetDlgItemText(IDC_EdbXDetail,strTmp);
 	SetDlgItemText(IDC_EdbData1 + ((CComboBox *)GetDlgItem(IDC_CbTransNum))->GetCurSel()
 		, strTmp);
 }
@@ -195,13 +195,14 @@ void CMultiSend::OnBnClickedBtntrans()
 
 BOOL CMultiSend::PreTranslateMessage(MSG* pMsg)
 {
-	//按键弹起并且选择按键触发而且焦点在最下方细节框里
-	if (pMsg->message == WM_KEYDOWN 
+	// 按键弹起并且选择按键触发而且焦点在最下方细节框里
+	if (pMsg->message == WM_KEYDOWN
 		&& isHotKey
 		&& GetDlgItem(IDC_EdbXDetail) == GetFocus())
 	{
 		TRACE("KeyVal:%d\n", pMsg->wParam);
-		switch (pMsg->wParam+32)//还原成ascii
+		// 还原成ascii
+		switch (pMsg->wParam + 32)
 		{
 		case 'w':
 			OnBnClickedBtnsend(IDC_BtnSend1);break;

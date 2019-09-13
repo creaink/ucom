@@ -1,20 +1,20 @@
 #pragma once
 
-// CDataWatch 对话框
+// CDataWatch Dialog
 
 class CDataWatch : public CDialog
 {
 	DECLARE_DYNAMIC(CDataWatch)
 
 public:
-	CDataWatch(CWnd* pParent = NULL);   // 标准构造函数
+	CDataWatch(CWnd* pParent = NULL);   // Standard constructor
 	virtual ~CDataWatch();
 
-// 对话框数据
+// Dialog data
 	enum { IDD = IDD_WATCH };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 

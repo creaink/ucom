@@ -1,8 +1,8 @@
 #pragma once
 
 
-// CMultiSend 对话框
-// 发送助手
+// CMultiSend Dialog
+// Send helper
 #include "Text.h"
 #include "UBase.h"
 
@@ -15,7 +15,7 @@ public:
 	CMultiSend::CMultiSend(CWnd* pParent, UcomBase** mbase);
 	virtual ~CMultiSend();
 
-// 对话框数据
+// Dialog data
 	enum { IDD = IDD_XSEND };
 
 
@@ -31,7 +31,7 @@ private:
 
 	UcomBase** uuBase;
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 
 

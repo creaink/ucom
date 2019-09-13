@@ -25,7 +25,7 @@ CUcomDlg::CUcomDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 
-	//设置程序图标
+	// 设置程序图标
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
 }
 
@@ -88,7 +88,7 @@ BOOL CUcomDlg::OnInitDialog()
 	CRect rect1, rect2;
 
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
-	//  执行此操作
+	// 执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
@@ -111,7 +111,7 @@ BOOL CUcomDlg::OnInitDialog()
 	rxCnt = 0;
 	txCnt = 0;
 
-	//窗口分隔按键初始化
+	// 窗口分隔按键初始化
 	hzSplitter.SubclassDlgItem(IDC_BtnSplitter, this);
 	hzSplitter.SetType(CS_HORZ);
 
@@ -246,13 +246,17 @@ void CUcomDlg::SendEditBoxData(void)
 	CString tmpStr("\r\n");
 	int tmpCnt;
 	//换行
-	if (isNewLineSend == TRUE) {
+	if (isNewLineSend == TRUE)
+	{
 		tmpCnt = 1 + uBase->AsyncSend(DataTx.GetCStrData() + tmpStr);
 	}
-	else {
+	else
+	{
 		tmpCnt = uBase->AsyncSend(DataTx.GetCStrData());
 	}
-	if (tmpCnt > 0) {
+
+	if (tmpCnt > 0)
+	{
 		txCnt += tmpCnt;
 		//刷新计数
 		tmpStr.Format(_T("发送：%d Bytes"), txCnt);
@@ -265,7 +269,7 @@ void CUcomDlg::ReflashRecvEdit(void)
 {
 	CString tmpStr;
 	CRichEditCtrl *pRich = (CRichEditCtrl *)GetDlgItem(IDC_RichRx);
-	
+
 	static int cnt=0,lastRxCnt=0;
 	//计数就按rxFlashPeriod = 50ms来吧,队列长20
 
@@ -278,7 +282,7 @@ void CUcomDlg::ReflashRecvEdit(void)
 		cnt = 0;
 		lastRxCnt = 0;
 	}
-	
+
 	if (DataRx.GetLength() != 0)
 	{
 		//用Limt方法不行，其最大值会变
@@ -340,7 +344,7 @@ void CUcomDlg::OnBtnClearnCnt()
 	rxCnt = 0;
 	txCnt = 0;
 
-	//清零计数
+	// 清零计数
 	tmpStr.Format(_T("接收：%d Bytes ,速率：0 Bps"), rxCnt);
 	SetDlgItemText(IDC_TxtRecvCnt, tmpStr);
 
@@ -365,11 +369,11 @@ void CUcomDlg::OnCkbSendHex()
 	}
 	else
 		isSendHex = FALSE;
-	
+
 	DataTx.ClearData();
 }
 
-//输入框输入数据格式处理
+// 输入框输入数据格式处理
 void CUcomDlg::OnChangeEditTxData()
 {
 	CString strtmp;
@@ -383,7 +387,7 @@ void CUcomDlg::OnChangeEditTxData()
 		pCh = strtmp.GetBuffer(0);
 		while (*pCh != '\0')
 		{
-			//禁止输入其他字符
+			// 禁止输入其他字符
 			if (!TextBank::isHexChar(*pCh))
 			{
 				int pos = strtmp.Find(*pCh);
@@ -398,7 +402,7 @@ void CUcomDlg::OnChangeEditTxData()
 
 		if (isPure)
 		{
-			//16进制格式存入
+			// 16进制格式存入
 			DataTx.ReString(strtmp, TRUE);
 		}
 		else
@@ -416,22 +420,24 @@ void CUcomDlg::OnChangeEditTxData()
 	{
 		DataTx.ReString(strtmp);
 
-		//若是CMD模式回车发送(数据包含回车)，并将发送的内容添以特殊格式加到接收框的新行中
-		if (isCmdMode && (strtmp.Find('\n') != -1)) {
+		// 若是CMD模式回车发送(数据包含回车)，并将发送的内容添以特殊格式加到接收框的新行中
+		if (isCmdMode && (strtmp.Find('\n') != -1))
+		{
 			CRichEditCtrl *pRich = (CRichEditCtrl*)GetDlgItem(IDC_RichRx);
-			//文字格式结构
+			// 文字格式结构
 			CHARFORMAT2 cf;
-			//取得文本框当前文字的格式
+			// 取得文本框当前文字的格式
 			pRich->GetSelectionCharFormat(cf);
-			//删除回车
+			// 删除回车
 			strtmp = DataTx.GetCStrData();
 			strtmp.Remove('\r');
 			strtmp.Remove('\n');
-			//记录历史命令
+			// 记录历史命令
 			cmdHistory[cmdNextPointer].Empty();
 			cmdHistory[cmdNextPointer] = strtmp;
-			
-			if (++cmdNextPointer == MAX_CMD_HISTORY) {
+
+			if (++cmdNextPointer == MAX_CMD_HISTORY)
+			{
 				cmdNextPointer = 0;
 				cmdDispPointer = MAX_CMD_HISTORY - 1;
 			}
@@ -447,7 +453,7 @@ void CUcomDlg::OnChangeEditTxData()
 			cf.dwEffects &= ~CFE_AUTOCOLOR;
 			cf.crTextColor = RGB(240, 60, 60);
 			cf.dwEffects |= CFM_ITALIC | CFM_BOLD;
-			//将文本格式信息设置到文本框当前文本
+			// 将文本格式信息设置到文本框当前文本
 			cf.dwMask = CFM_BOLD | CFM_ITALIC | CFM_COLOR;
 
 			int preLen = pRich->GetWindowTextLengthA();
@@ -457,9 +463,9 @@ void CUcomDlg::OnChangeEditTxData()
 			if (pRich->GetLineCount() == 2)
 				pRich->SetSel(0, pRich->GetTextLength()-1);//头行特殊判断
 			else
-				pRich->SetSel(pRich->LineIndex(pRich->GetLineCount() - 2) - 1, 
+				pRich->SetSel(pRich->LineIndex(pRich->GetLineCount() - 2) - 1,
 								pRich->LineIndex(pRich->GetLineCount() - 1));
-			
+
 			pRich->SetSelectionCharFormat(cf);//设置颜色
 			pRich->SetSel(-1, 0);
 
@@ -495,21 +501,24 @@ afx_msg LRESULT CUcomDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 	}
 	else if ((wParam&WL_MASK) == WL_UCOM_OPEN)
 	{
-		if (!isWorking) {
+		if (!isWorking)
+		{
 			isWorking = true;
 			SetDelaySend();
-			//设定接收框文本刷新时间 人眼24Hz
+			// 设定接收框文本刷新时间 人眼24Hz
 			SetTimer(FLASH_RX_EDITBOX_TIMER_ID, rxFlashPeriod, NULL);
 		}
 	}
 	else if ((wParam&WL_MASK) == WL_UCOM_CLOSE)
 	{
-		if (isWorking) {
+		if (isWorking)
+		{
 			isWorking = false;
-			KillTimer(AUTO_SEND_TIMER_ID); //自动发送关闭定时器
-			KillTimer(FLASH_RX_EDITBOX_TIMER_ID); //关闭接收显示定时器
+			KillTimer(AUTO_SEND_TIMER_ID); // 自动发送关闭定时器
+			KillTimer(FLASH_RX_EDITBOX_TIMER_ID); // 关闭接收显示定时器
 			// 如果关闭时候还有未刷新的数据手动刷新
-			if (DataRx.GetLength()) {
+			if (DataRx.GetLength())
+			{
 				ReflashRecvEdit();
 			}
 		}
@@ -517,7 +526,7 @@ afx_msg LRESULT CUcomDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-//窗口关闭处理，写入一些用户数据到注册表
+// 窗口关闭处理，写入一些用户数据到注册表
 void CUcomDlg::OnClose()
 {
 	WriteRegData();
@@ -526,7 +535,7 @@ void CUcomDlg::OnClose()
 	CDialog::OnClose();
 }
 
-//扩展按钮回调函数
+// 扩展按钮回调函数
 void CUcomDlg::OnBnClickedBtnwinsize()
 {
 	CRect rectOr;
@@ -546,7 +555,7 @@ void CUcomDlg::OnBnClickedBtnwinsize()
 	}
 }
 
-//设置接收区富文本行间距
+// 设置接收区富文本行间距
 void CUcomDlg::SetRichLineSpace(void)
 {
 	CRichEditCtrl *pRich = ((CRichEditCtrl *)GetDlgItem(IDC_RichRx));
@@ -558,17 +567,17 @@ void CUcomDlg::SetRichLineSpace(void)
 	memset(&pf, 0, sizeof(PARAFORMAT2));
 	pf.cbSize = sizeof(PARAFORMAT2);
 	pf.dwMask = PFM_LINESPACING;
-	pf.bLineSpacingRule = 4;   //0到5，分别对应word中的单倍行距、1.5倍行距、2倍行距、大于1行设定、最小值、多倍行距
-	
+	pf.bLineSpacingRule = 4;   // 0到5，分别对应word中的单倍行距、1.5倍行距、2倍行距、大于1行设定、最小值、多倍行距
+
 	pRich->GetDefaultCharFormat(cf);
-	pf.dyLineSpacing = cf.yHeight * 14 / 10;	//等于word中磅的20倍，当bLineSpacingRule等于3、4、5时有效
+	pf.dyLineSpacing = cf.yHeight * 14 / 10;	// 等于word中磅的20倍，当bLineSpacingRule等于3、4、5时有效
 
 	pRich->SetSel(0, -1);
 	pRich->SetParaFormat(pf);
 	pRich->SetSel(-1, 0);
 }
 
-//将接收区保存为文件
+// 将接收区保存为文件
 void CUcomDlg::OnBnClickedBtnsaverx()
 {
 	CFileDialog fDlg(
@@ -589,7 +598,7 @@ void CUcomDlg::OnBnClickedBtnsaverx()
 	}
 }
 
-//初始化扩展选项卡
+// 初始化扩展选项卡
 void CUcomDlg::InitTabEx(void)
 {
 	CRect rect;
@@ -624,7 +633,7 @@ void CUcomDlg::InitTabEx(void)
 	MultiSendDlg.ShowWindow(false);
 }
 
-//初始化数据源选项卡
+// 初始化数据源选项卡
 void CUcomDlg::InitTabSrc(void)
 {
 	CRect rect;
@@ -649,7 +658,7 @@ void CUcomDlg::InitTabSrc(void)
 	SwitchCurDataSrc(WH_UCOM_UART);
 }
 
-//切换数据收发源
+// 切换数据收发源
 void CUcomDlg::SwitchCurDataSrc(UINT dataSrc)
 {
 	CString tmp;
@@ -671,7 +680,7 @@ void CUcomDlg::SwitchCurDataSrc(UINT dataSrc)
 }
 
 
-//切换选项卡
+// 切换选项卡
 void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABEx);
@@ -691,7 +700,7 @@ void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 		EncoderDlg.ShowWindow(true);
 		DataWatchDlg.ShowWindow(false);
 		MultiSendDlg.ShowWindow(false);
-		break; 
+		break;
 	case 2:
 		GraphDlg.ShowWindow(false);
 		EncoderDlg.ShowWindow(false);
@@ -733,7 +742,7 @@ void CUcomDlg::OnSelchangeTabsrc(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
-//切换接收显示编码
+// 切换接收显示编码
 void CUcomDlg::OnBnClickedBtnencoder()
 {
 	if (++encoderMode == 3)
@@ -776,10 +785,10 @@ BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 {
 	CEdit *pEdit= (CEdit*)GetDlgItem(IDC_EditTxData);
 	int len;
-	//按键弹起并且选择按键触发而且焦点在发送框
+	// 按键弹起并且选择按键触发而且焦点在发送框
 	if (pMsg->message == WM_KEYDOWN && GetDlgItem(IDC_EditTxData) == GetFocus())
 	{
-		if ((GetKeyState(VK_CONTROL) & 0x80)) 
+		if ((GetKeyState(VK_CONTROL) & 0x80))
 		{
 			switch (pMsg->wParam)
 			{
@@ -810,7 +819,7 @@ BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 						cmdDispPointer = 0;
 					SetDlgItemText(IDC_EditTxData, cmdHistory[cmdDispPointer]);
 					TRACE("CMD_D:%d\n", cmdDispPointer);
-	
+
 					len = pEdit->GetWindowTextLengthA();
 					pEdit->SetSel(len, len);
 					pEdit->SetFocus();
@@ -836,7 +845,8 @@ void CUcomDlg::OnBnClickedCkbcmd()
 {
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbCMD))
 	{
-		if (isSendHex != true) {
+		if (isSendHex != true)
+		{
 			isCmdMode = TRUE;
 		}
 		else

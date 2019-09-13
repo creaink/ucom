@@ -62,19 +62,19 @@ BOOL CUartDlg::OnInitDialog()
 
 	isWorking = false;
 	InitPanel();
-	//装载注册表数据
+	// 装载注册表数据
 	LoadRegConfig();
 	SwPanel(isWorking);
 
 	mUart.SetParentHWND(GetSafeHwnd(), hwTopParent);
-	return TRUE; 
+	return TRUE;
 }
 
 
 void CUartDlg::OnPaint()
 {
 	CPaintDC dc(this);
-	//避免最小化后恢复出现图片不显示的情况
+	// 避免最小化后恢复出现图片不显示的情况
 	//SwPanel(isWorking);
 	if (isWorking)
 		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOn);
@@ -160,7 +160,7 @@ void CUartDlg::ChangeBmpPic(int PicCtrlID, unsigned short nPicID)
 	HBITMAP hBmp;
 	CStatic *pStatic = (CStatic*)GetDlgItem(PicCtrlID);
 
-	bitmap.LoadBitmap(nPicID);				// 将位图IDB_BITMAP1加载到bitmap   
+	bitmap.LoadBitmap(nPicID);				// 将位图IDB_BITMAP1加载到bitmap
 	hBmp = (HBITMAP)bitmap.GetSafeHandle();  // 获取bitmap加载位图的句柄
 
 	pStatic->SetBitmap(hBmp);				// 设置图片控件
@@ -169,7 +169,8 @@ void CUartDlg::ChangeBmpPic(int PicCtrlID, unsigned short nPicID)
 //切换面板状态
 void CUartDlg::SwPanel(bool choose)
 {
-	if (choose) {
+	if (choose)
+	{
 		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOn);
 		SetDlgItemText(UART_IDC_BTN_OPEN, _T("关闭串口"));
 	}
@@ -229,7 +230,8 @@ void CUartDlg::OpenUart()
 
 		//创建接收线程
 		hRxThread = AfxBeginThread(RxThreadFunc, mUart.GetThreadStartPara(), THREAD_PRIORITY_NORMAL);
-		if (hRxThread == NULL) {
+		if (hRxThread == NULL)
+		{
 			TRACE("Rx Listenner Thread Created Failed");
 			return;
 		}
@@ -292,7 +294,8 @@ void CUartDlg::LoadRegConfig()
 	CComboBox *pComBox = (CComboBox*)GetDlgItem(UART_IDC_CBB_PORT);
 
 	GetRegData(comName, dcbConfig);
-	if (comName != "NULL") {
+	if (comName != "NULL")
+	{
 		int sel = pComBox->FindString(-1, comName);
 		//没有该串口，或者不是串口号使用默认（初始化值）
 		if (sel != CB_ERR && comName[0] == 'C')
@@ -326,7 +329,7 @@ void CUartDlg::OnSelendokCbUartPort()
 	CComboBox *pComBox = (CComboBox *)GetDlgItem(UART_IDC_CBB_PORT);
 	int sel = pComBox->GetCurSel();
 	int cnt = pComBox->GetCount();
-	 
+
 	CString str;
 	//末尾刷新串口
 	if (sel == (cnt - 1))
@@ -356,7 +359,8 @@ void CUartDlg::OnStnClickedPicuartstatus()
 
 void CUartDlg::OnBnClickedCkbdtr()
 {
-	if (isWorking) {
+	if (isWorking)
+	{
 		if (BST_CHECKED == IsDlgButtonChecked(UART_IDC_CKB_DTR))
 			EscapeCommFunction(mUart.GetHandle(), SETDTR);
 		else
@@ -371,7 +375,8 @@ void CUartDlg::OnBnClickedCkbdtr()
 
 void CUartDlg::OnBnClickedCkbrts()
 {
-	if (isWorking) {
+	if (isWorking)
+	{
 		if (BST_CHECKED == IsDlgButtonChecked(UART_IDC_CKB_RTS))
 			EscapeCommFunction(mUart.GetHandle(), SETRTS);
 		else

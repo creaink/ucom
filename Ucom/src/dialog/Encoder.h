@@ -2,21 +2,21 @@
 #include "afxwin.h"
 #include "Text.h"
 
-// CEncoder 对话框
+// CEncoder Dialog
 
 class CEncoder : public CDialog
 {
 	DECLARE_DYNAMIC(CEncoder)
 
 public:
-	CEncoder(CWnd* pParent = NULL);   // 标准构造函数
+	CEncoder(CWnd* pParent = NULL);
 	virtual ~CEncoder();
 
-// 对话框数据
+// Dialog data
 	enum { IDD = IDD_ENCODER };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);
 private:
 	int encSel;
 public:

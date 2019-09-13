@@ -4,7 +4,7 @@
 #include "UBase.h"
 #include "iSocket.h"
 
-// CNetDlg 对话框
+// CNetDlg Dialog
 enum NetDlg_Type
 {
 	netdlg_tcpserver = 0,
@@ -20,11 +20,11 @@ class CNetDlg : public CDialog, public UcomBase
 	DECLARE_DYNAMIC(CNetDlg)
 
 private:
-	//接收线程句柄
+	// receive thread HADNLE
 	HANDLE hRxThread;
 	iSocket mSocket;
 	bool isWorking;
-	int curSender;	// 当前发送的客户端
+	int curSender;	// current send client
 	int typeSel;
 	CString infoServer, infoLocal;
 	HWND hwTopParent;
@@ -43,14 +43,14 @@ public:
 	void GetDstIPStr(CString &str);
 
 	void LoadRegConfig();
-	// 父窗口关闭时候OnClose需要调用保存一下信息
+	// when parent dialog close should invoke OnClose to save data
 	void WriteRegData(void);
 
-	//client列表处理
+	// client list process
 	void DelClient(nSocketPara *nPara);
 	void AddClient(nSocketPara *nPara);
 	void CleanClient(void);
-	
+
 	void OpenSocket(void);
 
 	int AsyncSend(const CString &dataStr);
@@ -59,13 +59,13 @@ public:
 		return mSocket.IsScoketOpen();
 	}
 
-// 对话框数据
+// Dialog data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_NET };
 #endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -59,7 +59,7 @@ BOOL CNetDlg::OnInitDialog()
 	InitPanel();
 
 	LoadRegConfig();
-	//切换禁用
+	// 切换禁用
 	OnSelNetType();
 	// 设置其消息句柄
 	mSocket.SetParentHWND(GetSafeHwnd(), hwTopParent);
@@ -76,7 +76,7 @@ void CNetDlg::InitPanel(void)
 	pComBox->InsertString(0, "UDP");
 	pComBox->InsertString(0, "TCP Server");
 	pComBox->InsertString(0, "TCP Client");
-	//选择TCP Client"位为默认
+	// 选择TCP Client"位为默认
 	pComBox->SetCurSel(0);
 	// 端口最大65535，限制为5位
 	((CEdit *)GetDlgItem(NET_IDC_EDT_PORT_SER))->LimitText(5);
@@ -126,7 +126,8 @@ void CNetDlg::EnableIPIn(int type)
 // 连接状态切换
 void CNetDlg::SwPanel(bool choose)
 {
-	if (choose) {
+	if (choose)
+	{
 		SetDlgItemText(NET_IDC_BTN_OPEN, _T("断开"));
 		ChangeBmpPic(NET_IDC_PIC_STAT, IDB_SwOn);
 	}
@@ -163,7 +164,7 @@ void CNetDlg::ChangeBmpPic(int PicCtrlID, unsigned short nPicID)
 	HBITMAP hBmp;
 	CStatic *pStatic = (CStatic*)GetDlgItem(PicCtrlID);
 
-	bitmap.LoadBitmap(nPicID);				// 将位图IDB_BITMAP1加载到bitmap   
+	bitmap.LoadBitmap(nPicID);				// 将位图IDB_BITMAP1加载到bitmap
 	hBmp = (HBITMAP)bitmap.GetSafeHandle();  // 获取bitmap加载位图的句柄
 
 	pStatic->SetBitmap(hBmp);				// 设置图片控件
@@ -231,7 +232,8 @@ void CNetDlg::DelClient(nSocketPara *nPara)
 	if (sel != CB_ERR)
 	{
 		pComBox->DeleteString(sel);
-		if (curSel == sel) {
+		if (curSel == sel)
+		{
 			curSel--;
 		}
 		pComBox->SetCurSel(curSel);
@@ -290,7 +292,8 @@ void CNetDlg::OpenSocket(void)
 			break;
 		case NETDLG_TCP_SERVER:	//TCP server
 			mSocket.Create(nPortLocal, SOCK_STREAM);
-			if (mSocket.Listen() == 0) {
+			if (mSocket.Listen() == 0)
+			{
 				TRACE("Server Err:%d\n", mSocket.GetLastError());
 				AfxMessageBox(_T("监听失败"));
 				return;
@@ -313,7 +316,8 @@ void CNetDlg::OpenSocket(void)
 		isWorking = false;
 		mSocket.Close();
 		// udp 模式
-		if (typeSel == 2) {
+		if (typeSel == 2)
+		{
 			mSocket.SetIsOpen(false);
 		}
 		CleanClient();
@@ -354,7 +358,9 @@ int CNetDlg::AsyncSend(const CString & dataStr)
 				}
 			}
 			else
+			{
 				return -1;
+			}
 		}
 	}
 	else
@@ -379,7 +385,8 @@ int CNetDlg::AsyncRead(CString & dataStr, CString & infoStr, WPARAM wParam, LPAR
 	}
 	else
 	{
-		if (typeSel == NETDLG_UDP) {
+		if (typeSel == NETDLG_UDP)
+		{
 			return mSocket.UnblockRead(dataStr, infoStr);
 		}
 		else
@@ -399,7 +406,7 @@ void CNetDlg::OnBtnConnect()
 	OpenSocket();
 }
 
-//点击图片打开
+// 点击图片打开
 void CNetDlg::OnClickedNpicuartstatus()
 {
 	OpenSocket();
@@ -462,7 +469,7 @@ afx_msg LRESULT CNetDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 		strIP.Format("Local:%s:%d\n", strIP, nPort);
 		SetTips(strIP);
 		break;
-	// server模式的客户端的连入和断开
+	// server 模式的客户端的连入和断开
 	case W_SUBNET_CLOSE:
 		TRACE("Client Close:%s\n", sParam->strIP);
 		DelClient(sParam);

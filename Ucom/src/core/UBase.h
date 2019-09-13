@@ -3,10 +3,10 @@
 #include <afxstr.h>
 
 
-// 注册全局消息
-// 在h文件里面afx_msg LRESULT OnMyReceiveMsg(WPARAM wParam, LPARAM lParam);
-// 在cpp文件里	ON_REGISTERED_MESSAGE(WM_MYONRECVMSG, OnMyReceiveMsg)
-// 并且在类里面实现该方法
+// register global message
+// at *.h file: afx_msg LRESULT OnMyReceiveMsg(WPARAM wParam, LPARAM lParam);
+// at *.cpp file: ON_REGISTERED_MESSAGE(WM_MYONRECVMSG, OnMyReceiveMsg)
+// implement this method in the class
 const UINT WM_MYONRECVMSG = ::RegisterWindowMessage(_T("ONRECEIVE"));
 
 #define WH_MASK			0xFFFF0000
@@ -28,12 +28,12 @@ const UINT WM_MYONRECVMSG = ::RegisterWindowMessage(_T("ONRECEIVE"));
 #define W_SUBNET_CLOSE	0x00120005
 
 
-//通信实现类给通信窗口类发的消息
+// custom message
 #define WM_NETDLG_MSG  (WM_USER + 2)
 #define WM_UARTDLG_MSG  (WM_USER + 3)
 
 
-// 纯虚函数、类似java中类似接口的作用
+// abstract of async send and read
 class UcomBase
 {
 public:

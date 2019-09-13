@@ -49,7 +49,7 @@ BOOL CEncoder::OnInitDialog()
 	pComBox = (CComboBox *)GetDlgItem(IDC_CbEncDec);
 	pComBox->InsertString(0, "HEX解码");
 	pComBox->InsertString(0, "编码查询");
-	// 选择转HEX为默认
+	// 选择转 HEX 为默认
 	pComBox->SetCurSel(0);
 	return TRUE;
 }
@@ -68,8 +68,8 @@ CString CEncoder::Ascii2Unicode(CString &strascii)
 	MultiByteToWideChar(CP_ACP, 0, (LPCCH)strascii.GetBuffer(0), -1, (LPWSTR)res.GetBuffer(0), nBytes);
 
 	const unsigned char *pCh = (const unsigned char *)(res.GetBuffer(0));
-	//去掉停止符0x0000
-	//nBytes = res.GetLength() - 2;
+	// 去掉停止符0x0000
+	// nBytes = res.GetLength() - 2;
 
 	char HexCh[] = "0xHLHL,";
 	if (m_RadioEnc == 2)
@@ -77,7 +77,7 @@ CString CEncoder::Ascii2Unicode(CString &strascii)
 
 	while (nBytes)
 	{
-		// 大端模式的Unicode转小端模式的hex string
+		// 大端模式的 Unicode 转小端模式的 hex string
 		HexCh[2] = HexTable[*(pCh + 1) / 16];
 		HexCh[3] = HexTable[*(pCh + 1) % 16];
 
@@ -97,12 +97,12 @@ CString CEncoder::Ascii2Unicode(CString &strascii)
 	return dataStr;
 }
 
-// 将ascii编码格式的字符串转为utf8编码的hex string
+// 将 ascii 编码格式的字符串转为 utf8 编码的 hex string
 CString CEncoder::Ascii2Utf8(CString &strascii)
 {
 	CString res, dataStr;
 	int nBytes = strascii.GetLength() * 2 + 2;
-	//先转为Unicode
+	// 先转为 Unicode
 	res.GetBufferSetLength(nBytes);
 	MultiByteToWideChar(CP_ACP, 0, strascii.GetBuffer(0), -1, (LPWSTR)res.GetBuffer(0), nBytes);
 
@@ -111,14 +111,14 @@ CString CEncoder::Ascii2Utf8(CString &strascii)
 	WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)res.GetBuffer(0), -1, dataStr.GetBuffer(0), nBytes, NULL, NULL);
 
 	const unsigned char *pCh = (const unsigned char *)(dataStr.GetBuffer(0));
-	//去掉停止符0x00
+	// 去掉停止符 0x00
 	nBytes--;
 	res.Empty();
 
 	char HexCh[] = "0xHL,";
 	if (m_RadioEnc == 2)
 		HexCh[4] = ' ';
-	
+
 	while (nBytes--)
 	{
 		HexCh[2] = HexTable[(*pCh) / 16];
@@ -134,7 +134,7 @@ CString CEncoder::Ascii2Utf8(CString &strascii)
 	return res;
 }
 
-// 得到ascii编码的hex string
+// 得到 ascii 编码的 hex string
 CString CEncoder::GetAsciiCode(CString &str)
 {
 	CString DataStr;
@@ -158,7 +158,7 @@ CString CEncoder::GetAsciiCode(CString &str)
 	return DataStr;
 }
 
-// Unicode编码转ascii编码
+// Unicode编码转 ascii 编码
 CString CEncoder::Unicode2Ascii(const CString &dataStr)
 {
 	int nBytes;
@@ -172,7 +172,7 @@ CString CEncoder::Unicode2Ascii(const CString &dataStr)
 	for (int i=0; i < nBytes;i++)
 	{
 		if (res[i] == '\0')
-			res.Delete(i, 1);//删除UNICODE兼容ascii生成的'\0'
+			res.Delete(i, 1); // 删除UNICODE兼容ascii生成的'\0'
 	}
 
 	return res;
@@ -184,7 +184,7 @@ CString CEncoder::Utf8toAscii(const CString &dataStr)
 	int nBytes;
 	CString res, uniStr = dataStr;
 	uniStr = uniStr + '\0';
-	//先转为Unicode
+	// 先转为Unicode
 	nBytes = MultiByteToWideChar(CP_UTF8, 0, uniStr.GetBuffer(0), -1, NULL, 0);
 	res.GetBufferSetLength(2*nBytes);
 
@@ -195,7 +195,7 @@ CString CEncoder::Utf8toAscii(const CString &dataStr)
 
 CString CEncoder::GetHexString(CString &dataStr)
 {
-	return  "ASCII编码:\r\n" + GetAsciiCode(dataStr) + "\r\n\r\nUtf8编码:\r\n" + 
+	return  "ASCII编码:\r\n" + GetAsciiCode(dataStr) + "\r\n\r\nUtf8编码:\r\n" +
 				Ascii2Utf8(dataStr) + "\r\n\r\nUnicode编码(16位小端):\r\n" + Ascii2Unicode(dataStr);
 }
 
@@ -224,7 +224,7 @@ void CEncoder::OnEnChangeEncinput()
 		pCh = strtmp.GetBuffer(0);
 		while (*pCh != '\0')
 		{
-			//禁止输入其他字符
+			// 禁止输入其他字符
 			if (!TextBank::isHexChar(*pCh))
 			{
 				int pos = strtmp.Find(*pCh);
@@ -238,7 +238,7 @@ void CEncoder::OnEnChangeEncinput()
 		}
 		if (isPure)
 		{
-			//16进制格式存入
+			// 16进制格式存入
 			DataDec.ReString(strtmp, TRUE);
 			SetDlgItemText(IDC_EncOuput, GetDecString(DataDec.GetCStrData()));
 		}
@@ -249,7 +249,7 @@ void CEncoder::OnEnChangeEncinput()
 			{
 				::EndDialog(hWnd, 0);
 			}
-			AfxMessageBox(_T("请输入有效的HEX格式!\n范围：('0-9','a-f','A-F')\n字节间可以用空格隔开"));
+			AfxMessageBox(_T("请输入有效的HEX格式!\n范围：('0-9', 'a-f', 'A-F')\n字节间可以用空格隔开"));
 		}
 	}
 }
@@ -271,7 +271,7 @@ void CEncoder::OnClickedRadio1()
 
 void CEncoder::OnOK()
 {
-	//CDialog::OnOK();
+	// CDialog::OnOK();
 	return;
 
 }

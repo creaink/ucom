@@ -6,9 +6,9 @@
 
 typedef struct
 {
-	//´®¿Ú¾ä±ú
+	// serial-port HANDLE
 	HANDLE *commHandle;
-	//Î´Ê¹ÓÃ
+	// unused
 	HWND hwParent;
 	HWND hwTopParent;
 }ThreadPara;
@@ -52,24 +52,32 @@ public:
 	int UnblockRead(CString &dataStr);
 	int UnblockSend(const CString &dataStr);
 
-	void SetParentHWND(HWND pParent, HWND pTopParent) {
+	void SetParentHWND(HWND pParent, HWND pTopParent)
+	{
 		hwParent = pParent;
 		hwTopParent = pTopParent;
 	}
-	HANDLE GetHandle(void){
+
+	HANDLE GetHandle(void)
+	{
 		return hUartCom;
 	}
-	HANDLE* GetHandleAddr(void){
+
+	HANDLE* GetHandleAddr(void)
+	{
 		return &hUartCom;
 	}
 
-	bool isConnected(void){
+	bool isConnected(void)
+	{
 		if (hUartCom == NULL)
 			return false;
 		else
 			return true;
 	}
-	ThreadPara *GetThreadStartPara(void){
+
+	ThreadPara *GetThreadStartPara(void)
+	{
 		mThreadPara.hwParent = hwParent;
 		mThreadPara.hwTopParent = hwTopParent;
 		return &mThreadPara;
@@ -79,4 +87,3 @@ public:
 
 
 UINT RxThreadFunc(LPVOID mThreadPara);
-

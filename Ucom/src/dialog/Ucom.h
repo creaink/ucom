@@ -1,18 +1,18 @@
 
-// Ucom.h : PROJECT_NAME 应用程序的主头文件
+// Ucom.h : PROJECT_NAME Application Header file
 //
 
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
+	#error "include this file before include stdafx.h to generate PCH file"
 #endif
 
-#include "resource.h"		// 主符号
+#include "resource.h"		// main symbol
 #include "DeConsole.h"
 
-// CUcomApp: 
-// 有关此类的实现，请参阅 Ucom.cpp
+// CUcomApp:
+// refer Ucom.cpp
 //
 
 class CUcomApp : public CWinApp
@@ -20,11 +20,11 @@ class CUcomApp : public CWinApp
 public:
 	CUcomApp();
 
-// 重写
+// overide
 public:
 	virtual BOOL InitInstance();
 
-// 实现
+// implement
 
 	DECLARE_MESSAGE_MAP()
 };

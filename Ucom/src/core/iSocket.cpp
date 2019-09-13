@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "iSocket.h"
 
-// :CAsyncSocket() 
+// :CAsyncSocket()
 iSocket::iSocket()
 {
 	AfxSocketInit();
@@ -54,7 +54,7 @@ void iSocket::OnReceive(int nErrorCode)
 
 
 // Server模式下客户端连入
-void iSocket::OnAccept(int nErrorCode) 
+void iSocket::OnAccept(int nErrorCode)
 {
 	TRACE("On Accept:%d\n", nErrorCode);
 	if (!nErrorCode) {
@@ -65,7 +65,8 @@ void iSocket::OnAccept(int nErrorCode)
 		nSocket *sockRecv = new nSocket(hwParent, hwTopParent);
 		sockRecv->SetSocketHandle(sockRecv);
 		//接收连接，若失败删除new的套接字
-		if (0 == Accept(*sockRecv)) {
+		if (0 == Accept(*sockRecv))
+		{
 			delete sockRecv;
 		}
 		else
@@ -78,7 +79,8 @@ void iSocket::OnAccept(int nErrorCode)
 
 void iSocket::OnConnect(int nErrorCode)
 {
-	if (nErrorCode == 0) {
+	if (nErrorCode == 0)
+	{
 		PostMsgIsOpen(true);
 	}
 	else
@@ -128,7 +130,8 @@ void iSocket::OnClose(int nErrorCode)
 void iSocket::PostMsgIsOpen(bool isOpen)
 {
 	isSocketOpen = isOpen;
-	if (isOpen) {
+	if (isOpen)
+	{
 		::PostMessage(hwTopParent, WM_MYONRECVMSG, WH_UCOM_NET | WL_UCOM_OPEN, 0);
 		::SendMessage(hwParent, WM_NETDLG_MSG, WL_UCOM_OPEN, 0);
 	}
@@ -233,7 +236,8 @@ void nSocket::GetClientInfo(void)
 
 void nSocket::PostMsgIsOpen(bool isOpen)
 {
-	if (isOpen) {
+	if (isOpen)
+	{
 		::SendMessage(hwParent, WM_NETDLG_MSG, W_SUBNET_OPEN, (LPARAM)&mPara);
 	}
 	else

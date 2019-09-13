@@ -49,7 +49,7 @@ void CUcomDlg::SetFullBytes(int nbytes)
 			isRxFullClc = false;
 	}
 	else
-		//接收的是字节
+		// 接收的是字节
 		limitBytes = nbytes;
 }
 
@@ -72,7 +72,7 @@ void CUcomDlg::OnBnClickedBtnclearall()
 	lastInfo.Empty();
 }
 
-//帮助信息
+// 帮助信息
 void CUcomDlg::OnBnClickedBtnhelp()
 {
 	::ShellExecute(NULL, NULL, "https://github.com/creaink/ucom", NULL, NULL, SW_SHOWNORMAL);
@@ -84,7 +84,7 @@ void CUcomDlg::SetDelaySend(void)
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbSendOnTime))
 	{
 		int time = GetDlgItemInt(IDC_EdbSendDelay);
-		//不能选择
+		// 不能选择
 		if (time <= 0 || uBase->IsRWable() == FALSE)
 		{
 			CButton *pCkb = (CButton *)GetDlgItem(IDC_CkbSendOnTime);
@@ -100,7 +100,7 @@ void CUcomDlg::SetDelaySend(void)
 	}
 }
 
-//改变发送间隔或者状态重新设定
+// 改变发送间隔或者状态重新设定
 void CUcomDlg::OnCkbSendOnTime()
 {
 	SetDelaySend();
@@ -126,7 +126,7 @@ void CUcomDlg::OnCkbDispHex()
 		isDispHex = FALSE;
 }
 
-//暂停接收显示消息处理函数
+// 暂停接收显示消息处理函数
 void CUcomDlg::OnBnClickedBtnisdisprx()
 {
 	isDispRx = !isDispRx;
@@ -142,7 +142,7 @@ void CUcomDlg::OnBnClickedBtntoolbox()
 	CMenu menu;
 	RECT rect;
 	menu.LoadMenu(IDR_MENU_ToolsBox);
-	//获取控件位置
+	// 获取控件位置
 	::GetWindowRect(GetDlgItem(IDC_BtnToolBox)->GetSafeHwnd(), &rect);
 	CMenu *popmenu = menu.GetSubMenu(0);
 
@@ -150,7 +150,7 @@ void CUcomDlg::OnBnClickedBtntoolbox()
 }
 
 
-//快捷菜单
+// 快捷菜单
 void CUcomDlg::OnMeudevmanger()
 {
 	::ShellExecute(m_hWnd, "open", "devmgmt.msc", NULL, NULL, SW_SHOWNORMAL);
@@ -185,16 +185,16 @@ void CUcomDlg::OnBnClickedBtnbackcolor()
 
 	CHARFORMAT cf = { 0 };
 	cf.cbSize = sizeof(cf);
-	//取得文本框当前文字的格式 
+	// 取得文本框当前文字的格式
 	pRich->GetSelectionCharFormat(cf);
-	//创建颜色对话框,并用取得的文字格式初始化对话框 
+	// 创建颜色对话框,并用取得的文字格式初始化对话框
 	CColorDialog dlg(cf.crTextColor, CC_FULLOPEN, this);
-	//显示对话框,选择颜色 
+	// 显示对话框,选择颜色
 	if (dlg.DoModal() == IDOK)
 	{
-		//取得用户所选颜色 
+		//取得用户所选颜色
 		cf.crTextColor = dlg.GetColor();
-		//将文本格式信息设置到文本框当前文本 
+		//将文本格式信息设置到文本框当前文本
 		cf.dwMask = CFM_COLOR;
 		cf.dwEffects = 0;
 		backgroudColor = cf.crTextColor;
@@ -209,16 +209,16 @@ void CUcomDlg::OnBnClickedBtnfontcolor()
 
 	CHARFORMAT cf = { 0 };
 	cf.cbSize = sizeof(cf);
-	//取得文本框当前文字的格式 
+	// 取得文本框当前文字的格式
 	pRich->GetSelectionCharFormat(cf);
-	//创建颜色对话框,并用取得的文字格式初始化对话框 
+	// 创建颜色对话框,并用取得的文字格式初始化对话框
 	CColorDialog dlg(cf.crTextColor, CC_FULLOPEN, this);
-	//显示对话框,选择颜色 
+	// 显示对话框,选择颜色
 	if (dlg.DoModal() == IDOK)
 	{
-		//取得用户所选颜色 
+		// 取得用户所选颜色
 		cf.crTextColor = dlg.GetColor();
-		//将文本格式信息设置到文本框当前文本 
+		// 将文本格式信息设置到文本框当前文本
 		cf.dwMask = CFM_COLOR;
 		cf.dwEffects = 0;
 		pRich->SetDefaultCharFormat(cf);
@@ -230,19 +230,19 @@ void CUcomDlg::OnBnClickedBtnfont()
 {
 	CRichEditCtrl *pRich = ((CRichEditCtrl *)GetDlgItem(IDC_RichRx));
 
-	//定义并初始化文字格式结构
+	// 定义并初始化文字格式结构
 	CHARFORMAT cf = { 0 };
 	cf.cbSize = sizeof(cf);
-	//取得文本框当前文字的格式
+	// 取得文本框当前文字的格式
 	pRich->GetSelectionCharFormat(cf);
 	//创建字体对话框,并用取得的文字格式初始化对话框
 	CFontDialog dlg(cf);
-	//显示对话框,选择字体信息
+	// 显示对话框,选择字体信息
 	if (dlg.DoModal() == IDOK)
 	{
-		//取得用户所选字体信息
+		// 取得用户所选字体信息
 		dlg.GetCharFormat(cf);
-		//将文本格式信息设置到文本框当前文本
+		// 将文本格式信息设置到文本框当前文本
 		cf.dwMask = CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE | CFM_UNDERLINE;
 		pRich->SetDefaultCharFormat(cf);
 
@@ -263,11 +263,12 @@ void CUcomDlg::ChangeItemSize(int nID, int x, int y, bool isEnlarge)
 	{
 		CRect rec;
 		int width, height;
-		pWnd->GetWindowRect(&rec);  //获取控件变化前的大小
-		ScreenToClient(&rec);   //将控件大小转换为在对话框中的区域坐标
+		pWnd->GetWindowRect(&rec);  // 获取控件变化前的大小
+		ScreenToClient(&rec);   // 将控件大小转换为在对话框中的区域坐标
 		width = rec.Width();
 		height = rec.Height();
-		if (isEnlarge) {
+		if (isEnlarge)
+		{
 			rec.right = rec.right + x;
 			rec.bottom = rec.bottom + y;
 		}
@@ -278,7 +279,7 @@ void CUcomDlg::ChangeItemSize(int nID, int x, int y, bool isEnlarge)
 			rec.right = rec.left + width;
 			rec.bottom = rec.top + height;
 		}
-		pWnd->MoveWindow(rec);//伸缩控件
+		pWnd->MoveWindow(rec); // 伸缩控件
 	}
 }
 

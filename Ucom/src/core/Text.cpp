@@ -38,7 +38,7 @@ void TextBank::AppendString(CString &mStr, bool isHexFormat)
 	}
 	else
 	{
-		// ¿½±´'0'
+		// ¿½±´ '\0'
 		DataStr.Append(mStr, nBytes);
 	}
 }

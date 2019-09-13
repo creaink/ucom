@@ -41,7 +41,7 @@ END_MESSAGE_MAP()
 void CGraphFull::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
-	
+
 	CWnd *pWnd;
 	pWnd = GetDlgItem(IDC_ChartFull);
 	if (pWnd != NULL)
@@ -55,8 +55,9 @@ void CGraphFull::OnSize(UINT nType, int cx, int cy)
 
 void CGraphFull::DoDDX_Control(bool isAttach)
 {
-	if (isAttach) {
-		//重绘
+	if (isAttach)
+	{
+		// 重绘
 		pChartCtrl->SubclassDlgItem(IDC_ChartFull, this);
 		OnSize(SIZE_RESTORED, 0, 0);
 	}
@@ -81,10 +82,11 @@ void CGraphFull::OnClose()
 {
 	//CDialog::OnClose();
 
-	//发送消息退出，调用父窗口关闭本窗口
+	// 发送消息退出，调用父窗口关闭本窗口
 	::SendMessage(pMianHwnd, WM_COMM_CLOSE_ME_MSG, 0, 0);
 }
-//将尺寸还原到内嵌的大小，避免显示不全
+
+// 将尺寸还原到内嵌的大小，避免显示不全
 void CGraphFull::Resize(LONG Bottom, LONG Right)
 {
 	CWnd *pWnd;

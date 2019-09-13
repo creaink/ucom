@@ -45,7 +45,7 @@ build/
 *.pidb
 *.log
 *.scc
-*.html
+
 
 # Visual C++ cache files
 ipch/
@@ -162,7 +162,6 @@ $RECYCLE.BIN/
 
 Output/
 ipch/
-*.zip
-Ucom/doc/zip
 .vs
 TODO.md
+Ucom/doc/

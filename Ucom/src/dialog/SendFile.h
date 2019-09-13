@@ -2,7 +2,7 @@
 
 #include "UBase.h"
 
-// CSnedFile 对话框
+// CSnedFile Dialog
 class CSendFile : public CDialog
 {
 	DECLARE_DYNAMIC(CSendFile)
@@ -11,7 +11,7 @@ public:
 	CSendFile::CSendFile(CWnd* pParent, UcomBase** mbase);
 	virtual ~CSendFile();
 
-// 对话框数据
+// Dialog data
 	enum { IDD = IDD_FILE_LOAD };
 
 private:
@@ -23,7 +23,7 @@ private:
 	UcomBase** uuBase;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

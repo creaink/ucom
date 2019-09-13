@@ -49,7 +49,7 @@ BOOL CDataWatch::OnInitDialog()
 	SetDlgItemInt(IDC_EditMaxListNum, 50);
 
 	pList = (CListCtrl *)GetDlgItem(IDC_ListWatch);
-	pList->ModifyStyle(0, LVS_REPORT);// 报表模式
+	pList->ModifyStyle(0, LVS_REPORT); // 报表模式
 	pList->SetExtendedStyle(pList->GetExtendedStyle()| LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	pList->InsertColumn(0, "序号");
 	pList->InsertColumn(2, "数据");
@@ -98,7 +98,9 @@ void CDataWatch::AddItem(CString str)
 		pList->SetItemText(0, 2, strTime);
 	}
 	else
+	{
 		pList->SetItemText(0, 2, str);
+	}
 
 }
 

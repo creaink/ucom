@@ -1,7 +1,6 @@
 #pragma once
 
-/*控制台调试
- 使用cout输出调试信息*/
+/* console debug, use cout to output debug info */
 //#define USING_CONSLOE
 #ifdef USING_CONSLOE
 

@@ -10,7 +10,7 @@ Ucom 中串口读写使用 [Serial-Communications-in-Win32](https://docs.microso
 
 ## 功能
 
-已下的功能都针对最新的版本来说，其他版本参考 [Changelog](https://github.com/creaink/ucom/blob/master/README.md)。
+已下的功能都针对最新的版本来说，其他版本参考 [Changelog](https://github.com/creaink/ucom/blob/master/CHANGELOG.md)。
 
 - **多数据源**，提供串口和网络两个数据源，切换数据源，不影响软件的其他功能
 - **配置保存功能**，当关闭软件时候会自动保存串口、网络配置里的信息和用户设定的背景色和字体色等配置

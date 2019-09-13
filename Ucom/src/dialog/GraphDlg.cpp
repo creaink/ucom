@@ -19,7 +19,7 @@ CGraphDlg::CGraphDlg(CWnd* pParent /*=NULL*/)
 , isFullGraph(false)
 , GraphFullDlg(&mChartCtrl)
 {
-	
+
 }
 
 CGraphDlg::~CGraphDlg()
@@ -72,11 +72,11 @@ BOOL CGraphDlg::OnInitDialog()
 	CRect rect;
 	CComboBox *pComBox;
 	CString str;
-	
-	//句柄分配有点慢不能放在构造里面，将本窗口句柄传递给子窗口
+
+	// 句柄分配有点慢不能放在构造里面，将本窗口句柄传递给子窗口
 	GraphFullDlg.pMianHwnd = this->GetSafeHwnd();
 
-	//初始化线的几个参数
+	// 初始化线的几个参数
 	pComBox = (CComboBox*)GetDlgItem(IDC_CbLineWidth);
 	pComBox->InsertString(0, "4");
 	pComBox->InsertString(0, "3");
@@ -96,23 +96,23 @@ BOOL CGraphDlg::OnInitDialog()
 	pComBox->InsertString(0, "实线");
 	pComBox->SetCurSel(0);
 
-	//数据list初始化
+	// 数据 list 初始化
 	GetDlgItem(IDC_LstLineData)->GetWindowRect(rect);
 	listColorAvailable = true;
 	pList = (CListCtrl *)GetDlgItem(IDC_LstLineData);
-	pList->ModifyStyle(0, LVS_REPORT);// 报表模式  
+	pList->ModifyStyle(0, LVS_REPORT);// 报表模式
 	pList->SetExtendedStyle(pList->GetExtendedStyle() | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	pList->InsertColumn(0, "头", LVCFMT_RIGHT);
 	pList->InsertColumn(1, "值", LVCFMT_RIGHT);
 
-	pList->GetClientRect(rect); //获得当前客户区信息  
-	pList->SetColumnWidth(0, rect.Width() / 4 * 1); //设置列的宽度。  
+	pList->GetClientRect(rect); // 获得当前客户区信息
+	pList->SetColumnWidth(0, rect.Width() / 4 * 1); // 设置列的宽度。
 	pList->SetColumnWidth(1, rect.Width() / 4 * 3);
 
-	//初始化表格
+	// 初始化表格
 	InitChart();
 
-	//在初始化线色后插入list数据条目
+	// 在初始化线色后插入 list 数据条目
 	for (int i = 0; i < MAX_GRAPH_LINES; i++)
 	{
 		str.Format("%d", i);
@@ -120,7 +120,7 @@ BOOL CGraphDlg::OnInitDialog()
 	}
 
 	((CButton*)GetDlgItem(IDC_RadYAxis))->SetCheck(1);
-	//载入默认设置
+	// 载入默认设置
 	OnBnClickedRadAxis();
 	OnSelendokCblinewidth();
 	OnSelendokCblinewidth();
@@ -128,12 +128,12 @@ BOOL CGraphDlg::OnInitDialog()
 	// 异常:  OCX 属性页应返回 FALSE
 }
 
-//HSI颜色模型到RGB转换，H范围0到2PI，S、I归一化到0到1
+// HSI 颜色模型到 RGB 转换，H 范围 0 到 2PI; S, I 归一化到 0 到 1
 COLORREF CGraphDlg::HSI2RGB(double H, double S, double I)
 {
 	unsigned char rB, rG, rR;
 	double R, G, B;
-	//算法参考冈萨勒斯数字图像处理
+	// 算法参考冈萨勒斯数字图像处理
 	if (H >= 0 && H<(PI * 2 / 3))
 	{
 		B = I*(1 - S);
@@ -152,35 +152,35 @@ COLORREF CGraphDlg::HSI2RGB(double H, double S, double I)
 		B = I*(1 + S*cos(H - 4 * PI / 3) / cos(5 * PI / 3 - H));
 		R = 3 * I - (G + B);
 	}
-	//还原归一化值
+	// 还原归一化值
 	rR = (int)(R * 255);
 	rG = (int)(G * 255);
 	rB = (int)(B * 255);
-	//大小限定
+	// 大小限定
 	rR = max(min(rR, 255), 0);
 	rG = max(min(rG, 255), 0);
 	rB = max(min(rB, 255), 0);
 	return RGB(rR, rG, rB);
 }
 
-//初始化曲线
+// 初始化曲线
 void CGraphDlg::InitLines(void)
 {
-	mChartCtrl.RemoveAllSeries();//先清空  
+	mChartCtrl.RemoveAllSeries(); // 先清空
 	double hueStep = 2*PI / (MAX_GRAPH_LINES);
 	for (int i = 0; i < MAX_GRAPH_LINES; i++)
 	{
 		lines[i].pLineSerie = mChartCtrl.CreateLineSerie();
 		lines[i].pLineSerie->SetSeriesOrdering(poNoOrdering);
 		lines[i].pLineSerie->SetWidth(1);
-		//以色度步进
+		// 以色度步进
 		lines[i].color = HSI2RGB(hueStep*i, 0.45, 0.50);
 		lines[i].IsVisible = false;
 		for (int j = 0; j < MAX_GRAPH_POINT; j++)
 			lines[i].data[j] = 0;
 	}
-	//自定义颜色，是否显示
-	
+	// 自定义颜色，是否显示
+
 	for (int i = 0; i < MAX_GRAPH_LINES; i++)
 	{
 		lines[i].pLineSerie->SetVisible(lines[i].IsVisible);
@@ -191,23 +191,24 @@ void CGraphDlg::InitLines(void)
 	pLineNow = 0;
 
 }
-//初始化图表
+
+// 初始化图表
 void CGraphDlg::InitChart(void)
 {
 	CChartAxis *pAxis = NULL;
-	//关闭刷新
+	// 关闭刷新
 	mChartCtrl.EnableRefresh(false);
-	//设置轴和曲线
+	// 设置轴和曲线
 	pBottomAxis = mChartCtrl.CreateStandardAxis(CChartCtrl::BottomAxis);
 	pLeftAxis = mChartCtrl.CreateStandardAxis(CChartCtrl::LeftAxis);
-	
+
 	InitLines();
 
 	pBottomAxis->SetAutomatic(false);
 	pBottomAxis->EnableScrollBar(false);
 	pBottomAxis->SetAutoHideScrollBar(true);
 	pBottomAxis->SetMinMax(0, MAX_GRAPH_POINT);
-	
+
 	pLeftAxis->SetAutomatic(false);
 	pLeftAxis->EnableScrollBar(false);
 	pLeftAxis->SetAutoHideScrollBar(true);
@@ -215,18 +216,19 @@ void CGraphDlg::InitChart(void)
 
 	COLORREF BackColor = RGB(225, 235, 225);
 	mChartCtrl.SetBackColor(BackColor);
-	//开启刷新
+	// 开启刷新
 	mChartCtrl.EnableRefresh(true);
 }
-//刷新波形图
-//增加一个点，刷新全图，时间在绘图操作上刷新较多，后面可以改进
+
+// 刷新波形图
+// 增加一个点，刷新全图，时间在绘图操作上刷新较多，后面可以改进
 void CGraphDlg::FlashGraph(void)
 {
 	int i, j;
 	mChartCtrl.EnableRefresh(false);
 	for (i = 0; i < MAX_GRAPH_LINES; i++)
 	{
-		if (lines[i].IsVisible) 
+		if (lines[i].IsVisible)
 		{
 			for (j = 0; j < MAX_GRAPH_POINT - 1; j++)
 			{
@@ -236,11 +238,12 @@ void CGraphDlg::FlashGraph(void)
 			lines[i].pLineSerie->SetPoints(lineXdata, lines[i].data, MAX_GRAPH_POINT);
 		}
 	}
-	
+
 	mChartCtrl.EnableRefresh(true);
 }
-//添加原始数据，并将其转换为分类，添加到曲线数据
-//可以用正则表达式重构
+
+// 添加原始数据，并将其转换为分类，添加到曲线数据
+// 可以用正则表达式重构
 void CGraphDlg::AddDataString(CString str)
 {
 	if (!isGraph)
@@ -255,7 +258,8 @@ void CGraphDlg::AddDataString(CString str)
 
 	// 数据是否是完整的一帧
 	if (isLast) {
-		if (str.FindOneOf("\r\n") == -1) {
+		if (str.FindOneOf("\r\n") == -1)
+		{
 			str = lastStr + str;
 			return;
 		}
@@ -279,24 +283,26 @@ void CGraphDlg::AddDataString(CString str)
 	for (int i = 0; i < MAX_GRAPH_LINES; i++)
 	{
 		lastSpacePos = str.Find(' ', nowSpacePos) + 1;
-		
-		if (lastSpacePos == 0) {
-			break;	//没有空格帧，或到帧末尾
+
+		if (lastSpacePos == 0)
+		{
+			break;	// 没有空格帧，或到帧末尾
 		}
 
 		nowSpacePos = str.Find(' ', lastSpacePos);
 		if (nowSpacePos == -1)
-		{	//末尾帧
+		{	// 末尾帧
 			nowSpacePos = str.GetLength();
 		}
 
-		//字符串长度得大于3，否则帧错误
-		if (nowSpacePos - lastSpacePos < 3) {
+		// 字符串长度得大于3，否则帧错误
+		if (nowSpacePos - lastSpacePos < 3)
+		{
 			return;
 		}
 
 		tmp = str.Mid(lastSpacePos, nowSpacePos - lastSpacePos) + '\0';
-		//当读取两个有效数据时正确
+		// 当读取两个有效数据时正确
 		if (sscanf_s(tmp.GetBuffer(0), "%d:%lf", &index, &data) == 2)
 		{
 			TRACE("index:%d data:%lf\r\n", index, data);
@@ -307,17 +313,18 @@ void CGraphDlg::AddDataString(CString str)
 				pList->SetItemText(index, 1, tmp);
 			}
 		}
-		else {
-			return;	//帧错误
+		else
+		{
+			return;	// 帧错误
 		}
-		//继续一帧
+		// 继续一帧
 		nowSpacePos=lastSpacePos;
 	}
 	cnt++;
 	FlashGraph();
 }
 
-//清除图表数据
+// 清除图表数据
 void CGraphDlg::OnBnClickedBtncleargraph()
 {
 	for (int i = 0; i < MAX_GRAPH_LINES; i++)
@@ -329,7 +336,7 @@ void CGraphDlg::OnBnClickedBtncleargraph()
 
 void CGraphDlg::OnOK()
 {
-	//CDialog::OnOK();
+	// CDialog::OnOK();
 	return;
 }
 
@@ -343,7 +350,7 @@ void CGraphDlg::OnBnClickedBtnstartgraph()
 		SetDlgItemText(IDC_BtnStartGraph, "开始");
 }
 
-//切换设置的轴
+// 切换设置的轴
 void CGraphDlg::OnBnClickedRadAxis()
 {
 	double max, min;
@@ -365,7 +372,8 @@ void CGraphDlg::OnBnClickedRadAxis()
 	strTmp.Format("%g", max);
 	SetDlgItemText(IDC_EdbAxisMax, strTmp);
 }
-//设置滚动
+
+// 设置滚动
 void CGraphDlg::OnBnClickedCkbaxisscroll()
 {
 	if (IsDlgButtonChecked(IDC_CkbAxisScroll) == 0)
@@ -373,7 +381,8 @@ void CGraphDlg::OnBnClickedCkbaxisscroll()
 	else
 		pAxisNow->EnableScrollBar(true);
 }
-//设置自动
+
+// 设置自动
 void CGraphDlg::OnBnClickedCkbaxisauto()
 {
 	if (IsDlgButtonChecked(IDC_CkbAxisAuto) == 0)
@@ -381,7 +390,8 @@ void CGraphDlg::OnBnClickedCkbaxisauto()
 	else
 		pAxisNow->SetAutomatic(true);
 }
-//设置网格
+
+// 设置网格
 void CGraphDlg::OnBnClickedCkbaxisgrid()
 {
 	if (IsDlgButtonChecked(IDC_CkbAxisGrid) == 0)
@@ -389,7 +399,8 @@ void CGraphDlg::OnBnClickedCkbaxisgrid()
 	else
 		pAxisNow->GetGrid()->SetVisible(true);
 }
-//失去焦点时候，设置最大最小值
+
+// 失去焦点时候，设置最大最小值
 void CGraphDlg::OnEdbaxismin()
 {
 	CString strTmp;
@@ -398,9 +409,11 @@ void CGraphDlg::OnEdbaxismin()
 	GetDlgItemText(IDC_EdbAxisMin, strTmp);
 	pAxisNow->GetMinMax(min,max);
 	ret = sscanf_s(strTmp, "%lf", &num);
-	//不违反范围，和格式
+	// 不违反范围，和格式
 	if (num < max || (ret != 1))
+	{
 		min = num;
+	}
 	else
 	{
 		strTmp.Format("%g", min);
@@ -416,11 +429,13 @@ void CGraphDlg::OnEdbaxismax()
 	int ret;
 	GetDlgItemText(IDC_EdbAxisMax, strTmp);
 	pAxisNow->GetMinMax(min, max);
-	
+
 	ret = sscanf_s(strTmp, "%lf", &num);
-	//不违反范围，和格式
+	// 不违反范围，和格式
 	if (num > min || (ret != 1))
+	{
 		max = num;
+	}
 	else
 	{
 		strTmp.Format("%g", max);
@@ -433,9 +448,10 @@ void CGraphDlg::OnEdbaxismax()
 bool CGraphDlg::ColorPicker(COLORREF &color)
 {
 	COLORREF dcolor=RGB(200,200,200);
-	//创建颜色对话框,并用取得的文字格式初始化对话框 
+	//创建颜色对话框,并用取得的文字格式初始化对话框
 	CColorDialog dlg(dcolor, CC_FULLOPEN, this);
-	if (dlg.DoModal() == IDOK) {
+	if (dlg.DoModal() == IDOK)
+	{
 		color = dlg.GetColor();
 		return true;
 	}
@@ -448,10 +464,12 @@ void CGraphDlg::OnBnClickedBtngraphcolor()
 	if (ColorPicker(color))
 		mChartCtrl.SetBackColor(color);
 }
-//设置曲线可见
+
+// 设置曲线可见
 void CGraphDlg::OnBnClickedCkblinev()
 {
-	if (IsDlgButtonChecked(IDC_CkbLineV) == 0) {
+	if (IsDlgButtonChecked(IDC_CkbLineV) == 0)
+	{
 		lines[pLineNow].pLineSerie->SetVisible(false);
 		lines[pLineNow].IsVisible = false;
 	}
@@ -462,7 +480,7 @@ void CGraphDlg::OnBnClickedCkblinev()
 
 }
 
-//list数据重绘，不同颜色
+// list 数据重绘，不同颜色
 void CGraphDlg::OnCustomdrawLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	//LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
@@ -488,7 +506,7 @@ void CGraphDlg::OnCustomdrawLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			clrNewBkColor = lines[nItem].color;
 		}
-		else 
+		else
 			clrNewBkColor = RGB(255,0,0);
 		pNMCD->clrText = clrNewTextColor;
 		pNMCD->clrTextBk = clrNewBkColor;
@@ -496,31 +514,35 @@ void CGraphDlg::OnCustomdrawLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 
 	}
 }
-//切换选择曲线
+// 切换选择曲线
 void CGraphDlg::OnClickLstlinedata(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	*pResult = 0;
 
-	CString str; 
+	CString str;
 	NMLISTVIEW *pNMListView = (NMLISTVIEW*)pNMHDR;
-	if (-1 != pNMListView->iItem)// 如果iItem不是-1，就说明有列表项被选择   
+
+	// 如果iItem不是-1，就说明有列表项被选择
+	if (-1 != pNMListView->iItem)
 	{
 		pLineNow = pNMListView->iItem;
 		str.Format("曲线:%d", pLineNow);
 		SetDlgItemText(IDC_TxtLineP, str);
 		((CButton*)GetDlgItem(IDC_CkbLineV))->SetCheck(lines[pLineNow].pLineSerie->IsVisible());
-		 
+
 		((CComboBox*)GetDlgItem(IDC_CbLineWidth))->SetCurSel(lines[pLineNow].pLineSerie->GetWidth()-1);
 		((CComboBox*)GetDlgItem(IDC_CbLinePen))->SetCurSel(lines[pLineNow].pLineSerie->GetPenStyle());
 
 	}
 }
-//设置曲线颜色
+
+// 设置曲线颜色
 void CGraphDlg::OnBnClickedBtnlinecolor()
 {
 	COLORREF color;
-	if (ColorPicker(color)) {
+	if (ColorPicker(color))
+	{
 		//设置列表颜色
 		lines[pLineNow].color = color;
 		//设置曲线颜色
@@ -528,7 +550,7 @@ void CGraphDlg::OnBnClickedBtnlinecolor()
 	}
 }
 
-//设置线宽
+// 设置线宽
 void CGraphDlg::OnSelendokCblinewidth()
 {
 	CString tmpStr;
@@ -538,7 +560,7 @@ void CGraphDlg::OnSelendokCblinewidth()
 	lines[pLineNow].pLineSerie->SetWidth(pComBox->GetCurSel()+1);
 }
 
-//设置线样式
+// 设置线样式
 void CGraphDlg::OnSelendokCblinepen()
 {
 	CString tmpStr;
@@ -548,7 +570,7 @@ void CGraphDlg::OnSelendokCblinepen()
 	lines[pLineNow].pLineSerie->SetPenStyle(pComBox->GetCurSel());
 }
 
-//设置滚动
+// 设置滚动
 void CGraphDlg::OnBnClickedBtnsaveline()
 {
 	CFileDialog fDlg(
@@ -589,19 +611,21 @@ void CGraphDlg::DoDDX_Control(bool isAttach)
 		if (mChartCtrl.SubclassDlgItem(IDC_Chart, this) == false)
 			MessageBox("Fail");
 	}
-	else {
+	else
+	{
 		if (mChartCtrl.GetSafeHwnd())
 			mChartCtrl.UnsubclassWindow();
 	}
 }
+
 afx_msg LRESULT CGraphDlg::CloseGraphFull(WPARAM wParam, LPARAM lParam)
 {
-	//接收关闭消息
+	// 接收关闭消息
 	OnBnClickedBtngraphfull();
 	return 0;
 }
 
-//外挂模式
+// 外挂模式
 void CGraphDlg::OnBnClickedBtngraphfull()
 {
 	bool isChange = false;
@@ -610,22 +634,25 @@ void CGraphDlg::OnBnClickedBtngraphfull()
 		isChange = true;
 	}
 	isFullGraph = !isFullGraph;
-	if (isFullGraph) {
+	if (isFullGraph)
+	{
 		SetDlgItemText(IDC_BtnGraphFull, "内嵌");
 		GraphFullDlg.Create(IDD_GraphFull);
 		GraphFullDlg.ShowWindow(true);
-		//解绑，绑定		
+		// 解绑，绑定
 		DoDDX_Control(false);
 		GraphFullDlg.DoDDX_Control(true);
 
-	} else {
+	}
+	else
+	{
 		SetDlgItemText(IDC_BtnGraphFull, "外挂");
-		//将尺寸还原到内嵌的大小
+		// 将尺寸还原到内嵌的大小
 		CRect rec;
 		GetDlgItem(IDC_Chart)->GetClientRect(&rec);
 		GraphFullDlg.Resize(rec.bottom, rec.right);
 
-		//解绑，绑定	
+		// 解绑，绑定
 		GraphFullDlg.DoDDX_Control(false);
 		DoDDX_Control(true);
 		GraphFullDlg.OnCancel();

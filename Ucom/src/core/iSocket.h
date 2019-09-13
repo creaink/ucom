@@ -13,7 +13,7 @@ typedef struct
 } nSocketPara;
 
 
-// client客户端类，用于ISocket的server模式的动态创建
+// socket client class, will be dynamic created at ISocket server mode
 class nSocket :public CAsyncSocket
 {
 private:
@@ -43,13 +43,13 @@ public:
 	int UnblockRead(CString &dataStr);
 };
 
-// 连接到本地server的client类
+// server socket
 class iSocket :public CAsyncSocket
 {
 private:
-	//是否可以读写操作
+	// socket is ready for read and write
 	bool isSocketOpen;
-	//父窗口句柄用于向非主窗口发送消息
+	// parent dialog HWND, use for send message to non-main dailog
 	HWND hwParent;
 	HWND hwTopParent;
 public:
@@ -74,16 +74,19 @@ public:
 	void PostMsgIsOpen(bool isOpen);
 	int UnblockRead(CString &dataStr);
 	int UnblockRead(CString & dataStr, CString & infoStr);
+
 	int UnblockSend(const CString & dataStr)
 	{
 		return Send((LPCTSTR)dataStr, dataStr.GetLength());
 	}
 
-	bool IsScoketOpen(void) {
+	bool IsScoketOpen(void)
+	{
 		return isSocketOpen;
 	}
-	// 主要用于UDP情况下，需要面板手动打开关闭
-	void SetIsOpen(bool isopen) {
+	// use for UDP Socket, need open or close in the pannel
+	void SetIsOpen(bool isopen)
+	{
 		isSocketOpen = isopen;
 	}
 };
