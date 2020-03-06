@@ -6,7 +6,7 @@ iSocket::iSocket()
 {
 	AfxSocketInit();
 	// 初始为1个当超过后再动态分配
-	nClient.SetSize(0,1);
+	nClient.SetSize(0, 1);
 }
 
 
@@ -236,14 +236,7 @@ void nSocket::GetClientInfo(void)
 
 void nSocket::PostMsgIsOpen(bool isOpen)
 {
-	if (isOpen)
-	{
-		::SendMessage(hwParent, WM_NETDLG_MSG, W_SUBNET_OPEN, (LPARAM)&mPara);
-	}
-	else
-	{
-		::SendMessage(hwParent, WM_NETDLG_MSG, W_SUBNET_CLOSE, (LPARAM)&mPara);
-	}
+	::SendMessage(hwParent, WM_NETDLG_MSG, isOpen ? W_SUBNET_OPEN : W_SUBNET_CLOSE, (LPARAM)&mPara);
 }
 
 int nSocket::UnblockRead(CString & dataStr)

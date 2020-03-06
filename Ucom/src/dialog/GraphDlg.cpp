@@ -344,10 +344,7 @@ void CGraphDlg::OnOK()
 void CGraphDlg::OnBnClickedBtnstartgraph()
 {
 	isGraph = !isGraph;
-	if (isGraph)
-		SetDlgItemText(IDC_BtnStartGraph, "停止");
-	else
-		SetDlgItemText(IDC_BtnStartGraph, "开始");
+	SetDlgItemText(IDC_BtnStartGraph, isGraph ? "停止" : "开始");
 }
 
 // 切换设置的轴
@@ -376,28 +373,19 @@ void CGraphDlg::OnBnClickedRadAxis()
 // 设置滚动
 void CGraphDlg::OnBnClickedCkbaxisscroll()
 {
-	if (IsDlgButtonChecked(IDC_CkbAxisScroll) == 0)
-		pAxisNow->EnableScrollBar(false);
-	else
-		pAxisNow->EnableScrollBar(true);
+	pAxisNow->EnableScrollBar(IsDlgButtonChecked(IDC_CkbAxisScroll) != 0);
 }
 
 // 设置自动
 void CGraphDlg::OnBnClickedCkbaxisauto()
 {
-	if (IsDlgButtonChecked(IDC_CkbAxisAuto) == 0)
-		pAxisNow->SetAutomatic(false);
-	else
-		pAxisNow->SetAutomatic(true);
+	pAxisNow->SetAutomatic(IsDlgButtonChecked(IDC_CkbAxisAuto) != 0);
 }
 
 // 设置网格
 void CGraphDlg::OnBnClickedCkbaxisgrid()
 {
-	if (IsDlgButtonChecked(IDC_CkbAxisGrid) == 0)
-		pAxisNow->GetGrid()->SetVisible(false);
-	else
-		pAxisNow->GetGrid()->SetVisible(true);
+	pAxisNow->GetGrid()->SetVisible(IsDlgButtonChecked(IDC_CkbAxisGrid) != 0);
 }
 
 // 失去焦点时候，设置最大最小值

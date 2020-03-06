@@ -415,10 +415,7 @@ void CNetDlg::OnClickedNpicuartstatus()
 void CNetDlg::OnPaint()
 {
 	CPaintDC dc(this);
-	if (isWorking)
-		ChangeBmpPic(NET_IDC_PIC_STAT, IDB_SwOn);
-	else
-		ChangeBmpPic(NET_IDC_PIC_STAT, IDB_SwOff);
+	ChangeBmpPic(NET_IDC_PIC_STAT, isWorking ? IDB_SwOn : IDB_SwOff);
 }
 
 

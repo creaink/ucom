@@ -76,10 +76,7 @@ void CUartDlg::OnPaint()
 	CPaintDC dc(this);
 	// 避免最小化后恢复出现图片不显示的情况
 	//SwPanel(isWorking);
-	if (isWorking)
-		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOn);
-	else
-		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOff);
+	ChangeBmpPic(UART_IDC_PIC_STAT, isWorking ? IDB_SwOn : IDB_SwOff);
 }
 
 
@@ -99,7 +96,9 @@ void CUartDlg::InitPanel(void)
 	TCHAR BaudrateTable[][7] = { "460800", "230400", "194000", "115200", "57600", "56000", "38400"
 								, "19200", "14400", "9600", "4800", "2400", "1200" };
 	for (int i = 0; i < (sizeof(BaudrateTable) / sizeof(BaudrateTable[0])); i++)
+	{
 		pComBox->InsertString(0, BaudrateTable[i]);
+	}
 
 	//选择115200为默认
 	pComBox->SetCurSel(pComBox->FindString(-1, "115200"));
@@ -169,17 +168,8 @@ void CUartDlg::ChangeBmpPic(int PicCtrlID, unsigned short nPicID)
 //切换面板状态
 void CUartDlg::SwPanel(bool choose)
 {
-	if (choose)
-	{
-		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOn);
-		SetDlgItemText(UART_IDC_BTN_OPEN, _T("关闭串口"));
-	}
-	else
-	{
-		ChangeBmpPic(UART_IDC_PIC_STAT, IDB_SwOff);
-		SetDlgItemText(UART_IDC_BTN_OPEN, _T("打开串口"));
-	}
-
+	ChangeBmpPic(UART_IDC_PIC_STAT, choose ? IDB_SwOn : IDB_SwOff);
+	SetDlgItemText(UART_IDC_BTN_OPEN, choose ? _T("关闭串口") : _T("打开串口"));
 	choose = !choose;
 	GetDlgItem(UART_IDC_CBB_BAUD)->EnableWindow(choose);
 	GetDlgItem(UART_IDC_CBB_BITS)->EnableWindow(choose);
@@ -194,10 +184,7 @@ bool CUartDlg::IsUartPortAvailable(void)
 	CComboBox *pCombox = (CComboBox *)GetDlgItem(UART_IDC_CBB_PORT);
 	pCombox->GetLBText(pCombox->GetCurSel(), comInfo);
 
-	if (comInfo.Left(3) == _T("COM"))
-		return true;
-	else
-		return false;
+	return comInfo.Left(3) == _T("COM");
 }
 
 void CUartDlg::OpenUart()

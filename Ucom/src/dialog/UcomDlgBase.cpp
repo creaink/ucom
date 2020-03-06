@@ -112,28 +112,19 @@ void CUcomDlg::OnChangeEdbSendDelay()
 
 void CUcomDlg::OnCkbFrameNewLine()
 {
-	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbFrameNewLine))
-		isNewLineSend = TRUE;
-	else
-		isNewLineSend = FALSE;
+	isNewLineSend = (BST_CHECKED == IsDlgButtonChecked(IDC_CkbFrameNewLine));
 }
 
 void CUcomDlg::OnCkbDispHex()
 {
-	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbDispHex))
-		isDispHex = TRUE;
-	else
-		isDispHex = FALSE;
+	isDispHex = (BST_CHECKED == IsDlgButtonChecked(IDC_CkbDispHex));
 }
 
 // 暂停接收显示消息处理函数
 void CUcomDlg::OnBnClickedBtnisdisprx()
 {
 	isDispRx = !isDispRx;
-	if (isDispRx)
-		SetDlgItemText(IDC_BtnIsDispRx, "暂停接收");
-	else
-		SetDlgItemText(IDC_BtnIsDispRx, "继续接收");
+	SetDlgItemText(IDC_BtnIsDispRx, isDispRx ? "暂停接收" : "继续接收");
 }
 
 
@@ -257,8 +248,8 @@ void CUcomDlg::ChangeItemSize(int nID, int x, int y, bool isEnlarge)
 {
 	CWnd *pWnd;
 	pWnd = GetDlgItem(nID);
-	if (x == 0 && y == 0)
-		return;
+	if (x == 0 && y == 0) return;
+
 	if (pWnd != NULL)
 	{
 		CRect rec;

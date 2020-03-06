@@ -12,6 +12,10 @@
 #define new DEBUG_NEW
 #endif
 
+#define GRAPH_TAB_INDEX 0
+#define ENCODER_TAB_INDEX 1
+#define DATA_WATCH_TAB_INDEX 2
+#define MULTI_SEND_TAB_INDEX 3
 
 // CUcomDlg 对话框
 
@@ -357,6 +361,7 @@ void CUcomDlg::OnCkbSendHex()
 {
 	if (BST_CHECKED == IsDlgButtonChecked(IDC_CkbSendHex))
 	{
+		// AT 模式与 HEX 发送互斥
 		if (isCmdMode) {
 			CButton *pCkb = (CButton *)GetDlgItem(IDC_CkbSendHex);
 			pCkb->SetCheck(BST_UNCHECKED);
@@ -368,7 +373,9 @@ void CUcomDlg::OnCkbSendHex()
 		}
 	}
 	else
+	{
 		isSendHex = FALSE;
+	}
 
 	DataTx.ClearData();
 }
@@ -461,10 +468,14 @@ void CUcomDlg::OnChangeEditTxData()
 			pRich->ReplaceSel("\r\n" + strtmp);
 
 			if (pRich->GetLineCount() == 2)
-				pRich->SetSel(0, pRich->GetTextLength()-1);//头行特殊判断
+			{
+				pRich->SetSel(0, pRich->GetTextLength() - 1);//头行特殊判断
+			}
 			else
+			{
 				pRich->SetSel(pRich->LineIndex(pRich->GetLineCount() - 2) - 1,
 								pRich->LineIndex(pRich->GetLineCount() - 1));
+			}
 
 			pRich->SetSelectionCharFormat(cf);//设置颜色
 			pRich->SetSel(-1, 0);
@@ -488,7 +499,8 @@ afx_msg LRESULT CUcomDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 		// 消息来到要尽快读取数据
 		uBase->AsyncRead(dataStr, infoStr, wParam, lParam);
 		// 是否更新额外信息
-		if (infoStr.GetLength() != 0 && lastInfo != infoStr) {
+		if (infoStr.GetLength() != 0 && lastInfo != infoStr)
+		{
 			DataRx.AppendString(infoStr);
 			lastInfo = infoStr;
 		}
@@ -544,7 +556,7 @@ void CUcomDlg::OnBnClickedBtnwinsize()
 	if (isLarge)
 	{
 		LargerMode = 2;
-		SetWindowPos(NULL, 0, 0, rectOr.Width()- widthEx, rectOr.Height(), SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(NULL, 0, 0, rectOr.Width() - widthEx, rectOr.Height(), SWP_NOMOVE | SWP_NOZORDER);
 		SetDlgItemText(IDC_BtnWinSize, "探索>>");
 	}
 	else
@@ -603,10 +615,10 @@ void CUcomDlg::InitTabEx(void)
 {
 	CRect rect;
 	CTabCtrl *pTab = (CTabCtrl *)GetDlgItem(IDC_TABEx);
-	pTab->InsertItem(0, "接收图表");
-	pTab->InsertItem(1, "编码解码");
-	pTab->InsertItem(2, "接收监视");
-	pTab->InsertItem(3, "发送助手");
+	pTab->InsertItem(GRAPH_TAB_INDEX, "接收图表");
+	pTab->InsertItem(ENCODER_TAB_INDEX, "编码解码");
+	pTab->InsertItem(DATA_WATCH_TAB_INDEX, "接收监视");
+	pTab->InsertItem(MULTI_SEND_TAB_INDEX, "发送助手");
 
 	GraphDlg.Create(IDD_GRAPH, pTab);
 	pTab->GetClientRect(&rect);
@@ -687,35 +699,10 @@ void CUcomDlg::OnSelchangeTabex(NMHDR *pNMHDR, LRESULT *pResult)
 	int sel = pTab->GetCurSel();
 	*pResult = 0;
 
-	switch (sel)
-	{
-	case 0:
-		GraphDlg.ShowWindow(true);
-		EncoderDlg.ShowWindow(false);
-		DataWatchDlg.ShowWindow(false);
-		MultiSendDlg.ShowWindow(false);
-		break;
-	case 1:
-		GraphDlg.ShowWindow(false);
-		EncoderDlg.ShowWindow(true);
-		DataWatchDlg.ShowWindow(false);
-		MultiSendDlg.ShowWindow(false);
-		break;
-	case 2:
-		GraphDlg.ShowWindow(false);
-		EncoderDlg.ShowWindow(false);
-		DataWatchDlg.ShowWindow(true);
-		MultiSendDlg.ShowWindow(false);
-		break;
-	case 3:
-		GraphDlg.ShowWindow(false);
-		EncoderDlg.ShowWindow(false);
-		DataWatchDlg.ShowWindow(false);
-		MultiSendDlg.ShowWindow(true);
-		break;
-	default:
-		break;
-	}
+	GraphDlg.ShowWindow(sel== GRAPH_TAB_INDEX);
+	EncoderDlg.ShowWindow(sel == ENCODER_TAB_INDEX);
+	DataWatchDlg.ShowWindow(sel == DATA_WATCH_TAB_INDEX);
+	MultiSendDlg.ShowWindow(sel == MULTI_SEND_TAB_INDEX);
 }
 
 // 数据源tab切换
@@ -774,8 +761,7 @@ void CUcomDlg::OnOK()
 
 void CUcomDlg::OnBnClickedBtnsendfile()
 {
-	if (!uBase->IsRWable())
-		return;
+	if (!uBase->IsRWable()) return;
 	CSendFile SendFileDlg(this, &uBase);
 	SendFileDlg.DoModal();
 }
@@ -790,14 +776,27 @@ BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 	{
 		if ((GetKeyState(VK_CONTROL) & 0x80))
 		{
-			switch (pMsg->wParam)
+			// Ctrl + Enter send
+			if (GetKeyState(VK_RETURN) & 0x80)
 			{
-			// 支持输入框内的ctrl+a全选操作
-			case 'a':
-			case 'A':
-				pEdit->SetSel(0, -1); return true;;
+				OnBtnSend();
+				return true;
+			}
+			else
+			{
+				switch (pMsg->wParam)
+				{
+					// 支持输入框内的ctrl+a全选操作
+					case 'a':
+					case 'A':
+						pEdit->SetSel(0, -1); return true;
+						break;
+					default:
+						break;
+				}
 			}
 		}
+
 		// AT模式的高级功能
 		if (isCmdMode)
 		{
@@ -832,7 +831,8 @@ BOOL CUcomDlg::PreTranslateMessage(MSG* pMsg)
 					pEdit->SetSel(len, len);
 					pEdit->SetFocus();
 					return true;
-				default:break;
+				default:
+					break;
 			}
 		}
 	}
@@ -865,7 +865,8 @@ void CUcomDlg::OnSize(UINT nType, int cx, int cy)
 	static int lastCx = 0, lastCy = 0;
 
 	CDialog::OnSize(nType, cx, cy);
-	if (LargerMode) {
+	if (LargerMode)
+	{
 		lastCx = cx;
 		LargerMode = 0;
 		return;

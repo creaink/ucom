@@ -25,6 +25,7 @@ Ucom 中串口读写使用 [Serial-Communications-in-Win32](https://docs.microso
 - **支持面板的拖动**，支持横向、纵向窗口大小调整和发送接收纵向窗口调整
 - 提供数据统计和实时传输速率数据显示，快速清空等功能
 - 提供 HEX 接收显示和 HEX 模式发送，并对不规范输入进行提醒
+- `Ctrl + Enter` 快速发送
 
 ### 数据源面板
 
