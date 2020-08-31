@@ -649,3 +649,14 @@ void CGraphDlg::OnBnClickedBtngraphfull()
 	if (isChange)
 		OnBnClickedBtnstartgraph();
 }
+
+
+BOOL CGraphDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// ÆÁ±ÎESC¼ü£¬·ÀÖ¹¶Ô»°¿òÍË³ö
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+	{
+		return TRUE;
+	}
+	return CDialog::PreTranslateMessage(pMsg);
+}

@@ -83,4 +83,5 @@ public:
 	afx_msg void OnBnClickedBtnsaveline();
 	afx_msg void OnBnClickedBtngraphfull();
 	afx_msg LRESULT CloseGraphFull(WPARAM wParam, LPARAM lParam);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

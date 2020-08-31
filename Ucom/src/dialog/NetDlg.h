@@ -78,4 +78,5 @@ public:
 	afx_msg void OnSelChangeCient();
 	afx_msg void OnEditPortRecvComplete();
 	afx_msg void OnClickedNpicuartstatus();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

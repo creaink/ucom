@@ -70,4 +70,5 @@ public:
 	afx_msg void OnBnClickedCkbdtr();
 	afx_msg void OnBnClickedCkbrts();
 	afx_msg LRESULT OnMyReceiveMsg(WPARAM wParam, LPARAM lParam);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

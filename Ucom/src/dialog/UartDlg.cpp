@@ -399,3 +399,20 @@ void CUartDlg::ClearFlowCtrlStats(void)
 	((CButton *)GetDlgItem(UART_IDC_CKB_DSR))->SetCheck(BST_UNCHECKED);
 	((CButton *)GetDlgItem(UART_IDC_CKB_CTS))->SetCheck(BST_UNCHECKED);
 }
+
+
+BOOL CUartDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// 屏蔽回车/ESC键，防止对话框退出
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		switch (pMsg->wParam)
+		{
+		case VK_RETURN: 
+			return TRUE;
+		case VK_ESCAPE:
+			return TRUE;
+		}
+	}
+	return __super::PreTranslateMessage(pMsg);
+}

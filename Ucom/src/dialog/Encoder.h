@@ -41,4 +41,5 @@ public:
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelchangeEncEec();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

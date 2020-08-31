@@ -195,6 +195,12 @@ void CMultiSend::OnBnClickedBtntrans()
 
 BOOL CMultiSend::PreTranslateMessage(MSG* pMsg)
 {
+	// 屏蔽ESC键，防止对话框退出
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+	{
+		return TRUE;
+	}
+
 	// 按键弹起并且选择按键触发而且焦点在最下方细节框里
 	if (pMsg->message == WM_KEYDOWN
 		&& isHotKey
@@ -204,6 +210,8 @@ BOOL CMultiSend::PreTranslateMessage(MSG* pMsg)
 		// 还原成ascii
 		switch (pMsg->wParam + 32)
 		{
+		case VK_ESCAPE:
+			return TRUE;
 		case 'w':
 			OnBnClickedBtnsend(IDC_BtnSend1);break;
 		case 's':

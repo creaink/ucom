@@ -37,4 +37,5 @@ public:
 	afx_msg void OnBnClickedBtnclearlist();
 	afx_msg void OnClickListwatch(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

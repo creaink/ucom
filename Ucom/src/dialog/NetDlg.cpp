@@ -483,3 +483,19 @@ afx_msg LRESULT CNetDlg::OnMyReceiveMsg(WPARAM wParam, LPARAM lParam)
 void CNetDlg::SetTips(CString tips) {
 	SetDlgItemText(NET_IDC_TXT_INFO, tips);
 }
+
+BOOL CNetDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// 屏蔽回车/ESC键，防止对话框退出
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		switch (pMsg->wParam)
+		{
+		case VK_RETURN:
+			return TRUE;
+		case VK_ESCAPE:
+			return TRUE;
+		}
+	}
+	return __super::PreTranslateMessage(pMsg);
+}
